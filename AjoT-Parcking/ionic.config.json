@@ -1,7 +1,0 @@
-{
-  "name": "AjoT-Parcking",
-  "integrations": {
-    "capacitor": {}
-  },
-  "type": "angular"
-}

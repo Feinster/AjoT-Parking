@@ -1,0 +1,7 @@
+{
+    "name": "AjoT-Parking",
+    "integrations": {
+        "capacitor": {}
+    },
+    "type": "angular"
+}
