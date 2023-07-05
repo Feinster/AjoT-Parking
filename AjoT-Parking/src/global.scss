@@ -9,18 +9,48 @@
  * https://ionicframework.com/docs/layout/global-stylesheets
  */
 
+
 /* Core CSS required for Ionic components to work properly */
+
 @import "@ionic/angular/css/core.css";
 
 /* Basic CSS for apps built with Ionic */
+
 @import "@ionic/angular/css/normalize.css";
 @import "@ionic/angular/css/structure.css";
 @import "@ionic/angular/css/typography.css";
 @import '@ionic/angular/css/display.css';
 
 /* Optional CSS utils that can be commented out */
+
 @import "@ionic/angular/css/padding.css";
 @import "@ionic/angular/css/float-elements.css";
 @import "@ionic/angular/css/text-alignment.css";
 @import "@ionic/angular/css/text-transformation.css";
 @import "@ionic/angular/css/flex-utils.css";
+.fullheight {
+    height: 100%;
+}
+
+.xc {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+}
+
+.background-content {
+    --background: url('../src/assets/sfondo.jpg') 0 0/100% 100% no-repeat;
+}
+
+.background-card {
+    background: linear-gradient(115deg, rgba(255, 255, 255, 1) 0%, rgba(110, 174, 235, 1) 80%, rgba(18, 74, 123, 1) 100%);
+    border: 2px solid black;
+    width: 75%;
+}
+
+.title {
+    font-weight: bold;
+    color: white;
+    font-size: 5vw;
+}

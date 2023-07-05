@@ -1,0 +1,45 @@
+<ion-content class="background-content">
+  <div class="fullheight xc">
+
+    <ion-text class="title">AjoT Parking</ion-text>
+
+    <ion-card class="background-card">
+      <ion-grid>
+        <ion-row class="ion-align-items-center ion-justify-content-center">
+          <ion-col align-self-center size="12" size-sm="6">
+            <ion-row class="ion-justify-content-left">
+              <ion-back-button defaultHref="/home" text="Back"></ion-back-button>
+            </ion-row>
+
+            <form>
+              <ion-item lines="full">
+                <ion-label position="floating">Email</ion-label>
+                <ion-input type="text" required></ion-input>
+              </ion-item>
+
+              <ion-item lines="full">
+                <ion-label position="floating">Password</ion-label>
+                <ion-input type="password" required></ion-input>
+              </ion-item>
+
+
+              <ion-button type="submit" color="danger" expand="block" style="margin-top:10px">Sign In</ion-button>
+
+              <ion-row class="ion-text-center">
+                <ion-col>
+                  <a [routerLink]="['/forgot-password']" class="small-text" style="margin-top:10px">Forgot Password?</a>
+                </ion-col>
+              </ion-row>
+
+            </form>
+          </ion-col>
+
+          <ion-col size="0" size-sm="6">
+            <ion-img src="../../assets/login.png" alt="Macchina"></ion-img>
+          </ion-col>
+        </ion-row>
+      </ion-grid>
+    </ion-card>
+
+  </div>
+</ion-content>
