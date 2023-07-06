@@ -1,12 +1,14 @@
 <ion-content class="auth-form background-content">
   <div class="fullheight xc">
 
-    <ion-text class="title">AjoT Parking</ion-text>
-
     <ion-card class="background-card">
-      <ion-grid>
+      <ion-grid style="padding: 0px">
         <ion-row class="ion-align-items-center">
-          <ion-col align-self-center size="6">
+          <ion-col size="12" class="ion-hide-sm-up ion-text-center">
+            <ion-text class="title">AjoT Parking</ion-text>
+          </ion-col>
+
+          <ion-col align-self-center size="12" size-sm="6">
             <ion-button [routerLink]="['/registration']" expand="block" color="primary">Register</ion-button>
 
             <ion-text class="divider line one-line">or</ion-text>
@@ -16,8 +18,13 @@
             <ion-button [routerLink]="['/login']" expand="block" color="danger">Sign In</ion-button>
           </ion-col>
 
-          <ion-col size="0" size-sm="6">
-            <ion-img src="../../assets/login.png" alt="Macchina"></ion-img>
+          <ion-col size-sm="6" class="ion-hide-sm-down border-left">
+            <ion-row>
+              <ion-text class="title">AjoT Parking</ion-text>
+            </ion-row>
+            <ion-row>
+              <ion-img src="../../assets/login.png" alt="Macchina"></ion-img>
+            </ion-row>
           </ion-col>
         </ion-row>
       </ion-grid>
