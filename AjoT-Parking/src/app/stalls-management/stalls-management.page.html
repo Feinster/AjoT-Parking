@@ -1,0 +1,82 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title class="ion-text-center">AjoT Parking - Stalls Management</ion-title>
+    <ion-button slot="end" style="margin-right: 10px;" [routerLink]="['/parking']">
+      <ion-icon name="log-out-outline"></ion-icon>
+    </ion-button>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <ion-grid class="full-w-h">
+    <ion-row class="full-w-h">
+      <ion-col size="12" size-sm="2" style="border-right: 2px solid black;">
+        <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" style="border:2px solid black;" />
+        <ion-row class="ion-justify-content-center" style="margin-top:25px">
+          <ion-text style="font-size: 20px;">Stalls available: 5555 / 99999</ion-text>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-center" style="margin-top:25px">
+          <ion-button>Close</ion-button>
+        </ion-row>
+      </ion-col>
+
+      <ion-col size="12" size-sm="10">
+
+        <ion-grid>
+          <ion-row class="ion-justify-content-end">
+            <ion-button>
+              <ion-icon name="add-outline" slot="start"></ion-icon>Add stall
+            </ion-button>
+          </ion-row>
+
+          <br>
+
+          <ion-row class="ion-align-items-center" style="border-bottom: 2px solid black;">
+            <ion-col size="12" size-sm="auto">
+              <ion-text>Stall n° 1</ion-text>
+            </ion-col>
+            <ion-col>
+              <ion-text>Busy</ion-text>
+            </ion-col>
+            <ion-col size="12" size-sm="1.5" class="ion-text-right">
+              <ion-button color="danger">
+                <ion-icon name="close-outline" slot="start"></ion-icon>
+                Delete</ion-button>
+            </ion-col>
+
+            <ion-col size="12" size-sm="1.5" class="ion-no-padding">
+              <ion-button expand="block" (click)="openModalInfo()">
+                <ion-icon name="search-outline" slot="start"></ion-icon>
+                See Info</ion-button>
+            </ion-col>
+          </ion-row>
+
+          <ion-row class="ion-align-items-center" style="border-bottom: 2px solid black;">
+            <ion-col size="12" size-sm="auto">
+              <ion-text>Stall n° 2</ion-text>
+            </ion-col>
+            <ion-col>
+              <ion-text>Busy</ion-text>
+            </ion-col>
+            <ion-col size="12" size-sm="1.5" class="ion-text-right">
+              <ion-button color="danger">
+                <ion-icon name="close-outline" slot="start"></ion-icon>
+                Delete</ion-button>
+            </ion-col>
+
+            <ion-col size="12" size-sm="1.5" class="ion-no-padding">
+              <ion-button expand="block">
+                <ion-icon name="search-outline" slot="start"></ion-icon>
+                See Info</ion-button>
+            </ion-col>
+          </ion-row>
+        </ion-grid>
+
+      </ion-col>
+    </ion-row>
+
+  </ion-grid>
+
+</ion-content>

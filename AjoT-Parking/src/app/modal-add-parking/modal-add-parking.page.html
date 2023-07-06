@@ -1,0 +1,44 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add new parking</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form>
+    <ion-item lines="full">
+      <ion-label position="floating">Name</ion-label>
+      <ion-input type="text" required></ion-input>
+    </ion-item>
+
+    <ion-item lines="full">
+      <ion-label position="floating">Number of stalls</ion-label>
+      <ion-input type="number" inputmode="numeric" type="number" (keypress)="numericOnly($event)" required></ion-input>
+    </ion-item>
+
+    <ion-radio-group>
+      <ion-list-header>
+        <ion-label>Status</ion-label>
+      </ion-list-header>
+
+      <ion-item>
+        <ion-label>Open</ion-label>
+        <ion-radio value="open"></ion-radio>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Close</ion-label>
+        <ion-radio value="close"></ion-radio>
+      </ion-item>
+    </ion-radio-group>
+
+    <ion-row>
+      <ion-col>
+        <ion-button type="submit" color="success" expand="block">Insert</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

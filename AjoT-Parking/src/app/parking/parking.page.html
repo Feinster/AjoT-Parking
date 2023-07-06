@@ -4,23 +4,29 @@
     <ion-button slot="end" style="margin-right: 10px;" [routerLink]="['/login']">
       <ion-icon name="log-out-outline"></ion-icon>
     </ion-button>
-
   </ion-toolbar>
 </ion-header>
 
 <ion-content>
   <ion-grid>
+
+    <ion-row class="ion-justify-content-end">
+      <ion-button style="margin-right: 10px;" (click)="openModalAddParking()">
+        <ion-icon name="add-outline" slot="start"></ion-icon>Add Parking
+      </ion-button>
+    </ion-row>
+
     <ion-row>
       <ion-col size="12" size-sm="3">
-        <ion-card>
+        <ion-card (click)="openStallsManagement()">
           <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
           <ion-card-header>
             <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Aperto</ion-card-subtitle>
+            <ion-card-subtitle>Open</ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
-            Posti disponibili: 5555
+            Stalls available: 5555 / 99999
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -30,11 +36,11 @@
           <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
           <ion-card-header>
             <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Aperto</ion-card-subtitle>
+            <ion-card-subtitle>Open</ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
-            Posti disponibili: 5555
+            Stalls available: 5555 / 99999
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -44,26 +50,11 @@
           <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
           <ion-card-header>
             <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Aperto</ion-card-subtitle>
+            <ion-card-subtitle>Open</ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
-            Posti disponibili: 5555
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-
-      <ion-col size="12" size-sm="3">
-        <ion-card>
-          <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
-          <ion-card-header>
-            <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Aperto</ion-card-subtitle>
-          </ion-card-header>
-
-          <ion-card-content>
-            Posti disponibili: 5555
+            Stalls available: 5555 / 99999
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -74,11 +65,11 @@
           <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
           <ion-card-header>
             <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Aperto</ion-card-subtitle>
+            <ion-card-subtitle>Open</ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
-            Posti disponibili: 5555
+            Stalls available: 5555 / 99999
           </ion-card-content>
         </ion-card>
       </ion-col>
@@ -89,11 +80,26 @@
           <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
           <ion-card-header>
             <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Aperto</ion-card-subtitle>
+            <ion-card-subtitle>Open</ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
-            Posti disponibili: 5555
+            Stalls available: 5555 / 99999
+          </ion-card-content>
+        </ion-card>
+      </ion-col>
+
+
+      <ion-col size="12" size-sm="3">
+        <ion-card>
+          <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
+          <ion-card-header>
+            <ion-card-title>Nome Parcheggio</ion-card-title>
+            <ion-card-subtitle>Open</ion-card-subtitle>
+          </ion-card-header>
+
+          <ion-card-content>
+            Stalls available: 5555 / 99999
           </ion-card-content>
         </ion-card>
       </ion-col>

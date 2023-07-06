@@ -1,7 +1,7 @@
 <ion-content class="background-content">
   <div class="fullheight xc">
-
     <ion-card class="background-card">
+
       <ion-grid style="padding: 0px">
         <ion-row class="ion-align-items-center ion-justify-content-center">
 
@@ -13,10 +13,20 @@
 
             <ion-row style="margin-bottom: 10px;" class="container-title-page">
               <ion-back-button defaultHref="/home" text="Back"></ion-back-button>
-              <ion-title class="title-page">Login</ion-title>
+              <ion-title class="title-page">Register</ion-title>
             </ion-row>
 
             <form>
+              <ion-item lines="full">
+                <ion-label position="floating">First name</ion-label>
+                <ion-input type="text" required></ion-input>
+              </ion-item>
+
+              <ion-item lines="full">
+                <ion-label position="floating">Last name</ion-label>
+                <ion-input type="text" required></ion-input>
+              </ion-item>
+
               <ion-item lines="full">
                 <ion-label position="floating">Email</ion-label>
                 <ion-input type="text" required></ion-input>
@@ -27,16 +37,13 @@
                 <ion-input type="password" required></ion-input>
               </ion-item>
 
-
-              <ion-button [routerLink]="['/parking']" type="submit" color="danger" expand="block" style="margin-top:10px">Sign In</ion-button>
-
-              <ion-row class="ion-text-center">
+              <ion-row>
                 <ion-col>
-                  <a [routerLink]="['/forgot-password']" class="small-text" style="margin-top:10px">Forgot Password?</a>
+                  <ion-button type="submit" color="danger" expand="block">Sign Up</ion-button>
                 </ion-col>
               </ion-row>
-
             </form>
+
           </ion-col>
 
           <ion-col size-sm="6" class="ion-hide-sm-down border-left">
