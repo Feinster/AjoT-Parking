@@ -16,7 +16,7 @@
               <ion-title class="title-page">Register</ion-title>
             </ion-row>
 
-            <form>
+            <form [formGroup]="ionicForm" (ngSubmit)="submitForm()" novalidate>
               <ion-item lines="full">
                 <ion-label position="floating">First name</ion-label>
                 <ion-input type="text" required></ion-input>
@@ -29,13 +29,29 @@
 
               <ion-item lines="full">
                 <ion-label position="floating">Email</ion-label>
-                <ion-input type="text" required></ion-input>
+                <ion-input formControlName="email" aria-label="Email" type="email" required></ion-input>
               </ion-item>
+              <div *ngIf="ionicForm.controls?.['email']?.touched && ionicForm.controls?.['email']?.invalid">
+                <div class="error ion-padding" *ngIf="errorControl['email'].errors?.['required']">
+                  <ion-text color="danger">Email is required.</ion-text>
+                </div>
+                <div class="ion-padding" *ngIf="errorControl['email'].errors?.['pattern']">
+                  <ion-text color="danger">Please provide valid email.</ion-text>
+                </div>
+              </div>
 
               <ion-item lines="full">
                 <ion-label position="floating">Password</ion-label>
-                <ion-input type="password" required></ion-input>
+                <ion-input formControlName="password" aria-label="Password" type="password" required></ion-input>
               </ion-item>
+              <div *ngIf="ionicForm.controls?.['password']?.touched && ionicForm.controls?.['password']?.invalid">
+                <div class="error ion-padding" *ngIf="errorControl['password'].errors?.['required']">
+                  <ion-text color="danger">Password is required.</ion-text>
+                </div>
+                <div class="ion-padding" color="danger" *ngIf="ionicForm.controls?.['password']?.errors?.['minlength']">
+                  <ion-text color="danger">Password should be min 10 chars long.</ion-text>
+                </div>
+              </div>
 
               <ion-row>
                 <ion-col>
