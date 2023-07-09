@@ -12,19 +12,17 @@
           <ion-col align-self-center size="12" size-sm="6">
 
             <ion-row style="margin-bottom: 10px;" class="container-title-page">
-              <ion-back-button defaultHref="/home" text="Back"></ion-back-button>
+              <ion-back-button defaultHref="/home" text="Back" (click)="back()"></ion-back-button>
               <ion-title class="title-page">Login</ion-title>
             </ion-row>
 
             <form>
               <ion-item lines="full">
-                <ion-label position="floating">Email</ion-label>
-                <ion-input type="text" required></ion-input>
+                <ion-input type="text" required label="Email" labelPlacement="floating"></ion-input>
               </ion-item>
 
               <ion-item lines="full">
-                <ion-label position="floating">Password</ion-label>
-                <ion-input type="password" required></ion-input>
+                <ion-input type="password" required label="Password" labelPlacement="floating"></ion-input>
               </ion-item>
 
 

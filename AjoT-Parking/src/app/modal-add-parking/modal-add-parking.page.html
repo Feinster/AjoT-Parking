@@ -10,13 +10,11 @@
 <ion-content [fullscreen]="true">
   <form>
     <ion-item lines="full">
-      <ion-label position="floating">Name</ion-label>
-      <ion-input type="text" required></ion-input>
+      <ion-input type="text" required label="Name" labelPlacement="floating"></ion-input>
     </ion-item>
 
     <ion-item lines="full">
-      <ion-label position="floating">Number of stalls</ion-label>
-      <ion-input type="number" inputmode="numeric" type="number" (keypress)="numericOnly($event)" required></ion-input>
+      <ion-input type="number" inputmode="numeric" type="number" (keypress)="numericOnly($event)" required label="Number of stalls" labelPlacement="floating"></ion-input>
     </ion-item>
 
     <ion-radio-group>

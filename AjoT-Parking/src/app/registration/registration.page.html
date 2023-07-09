@@ -18,18 +18,15 @@
 
             <form [formGroup]="ionicForm" (ngSubmit)="submitForm()" novalidate>
               <ion-item lines="full">
-                <ion-label position="floating">First name</ion-label>
-                <ion-input type="text" required></ion-input>
+                <ion-input type="text" required label="First Name" labelPlacement="floating"></ion-input>
               </ion-item>
 
               <ion-item lines="full">
-                <ion-label position="floating">Last name</ion-label>
-                <ion-input type="text" required></ion-input>
+                <ion-input type="text" required label="Last Name" labelPlacement="floating"></ion-input>
               </ion-item>
 
               <ion-item lines="full">
-                <ion-label position="floating">Email</ion-label>
-                <ion-input formControlName="email" aria-label="Email" type="email" required></ion-input>
+                <ion-input formControlName="email" type="email" required label="Email" labelPlacement="floating"></ion-input>
               </ion-item>
               <div *ngIf="ionicForm.controls?.['email']?.touched && ionicForm.controls?.['email']?.invalid">
                 <div class="error ion-padding" *ngIf="errorControl['email'].errors?.['required']">
@@ -41,8 +38,7 @@
               </div>
 
               <ion-item lines="full">
-                <ion-label position="floating">Password</ion-label>
-                <ion-input formControlName="password" aria-label="Password" type="password" required></ion-input>
+                <ion-input formControlName="password" type="password" required label="Password" labelPlacement="floating"></ion-input>
               </ion-item>
               <div *ngIf="ionicForm.controls?.['password']?.touched && ionicForm.controls?.['password']?.invalid">
                 <div class="error ion-padding" *ngIf="errorControl['password'].errors?.['required']">

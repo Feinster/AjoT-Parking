@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-registration',
@@ -10,7 +11,7 @@ export class RegistrationPage implements OnInit {
 
   ionicForm: FormGroup;
 
-  constructor(public formBuilder: FormBuilder) {
+  constructor(public formBuilder: FormBuilder, private router: Router) {
     this.ionicForm = this.formBuilder.group({
       email: [
         '',
@@ -31,7 +32,7 @@ export class RegistrationPage implements OnInit {
 
   submitForm = () => {
     if (this.ionicForm.valid) {
-      console.log(this.ionicForm.value);
+      this.router.navigate(['/parking']);
       return false;
     } else {
       return console.log('Please provide all the required values!');
