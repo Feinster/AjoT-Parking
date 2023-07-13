@@ -16,17 +16,27 @@
               <ion-title class="title-page">Login</ion-title>
             </ion-row>
 
-            <form>
+            <form [formGroup]="loginForm" (ngSubmit)="signIn()" novalidate>
               <ion-item lines="full">
-                <ion-input type="text" required label="Email" labelPlacement="floating"></ion-input>
+                <ion-input type="text" required label="Email" labelPlacement="floating" formControlName="email"></ion-input>
               </ion-item>
+              <div *ngIf="loginForm.controls?.['email']?.touched && loginForm.controls?.['email']?.invalid">
+                <div class="error ion-padding" *ngIf="errorControl['email'].errors?.['required']">
+                  <ion-text color="danger">Email is required.</ion-text>
+                </div>
+              </div>
 
               <ion-item lines="full">
-                <ion-input type="password" required label="Password" labelPlacement="floating"></ion-input>
+                <ion-input type="password" required label="Password" labelPlacement="floating" formControlName="password"></ion-input>
               </ion-item>
+              <div *ngIf="loginForm.controls?.['password']?.touched && loginForm.controls?.['password']?.invalid">
+                <div class="error ion-padding" *ngIf="errorControl['password'].errors?.['required']">
+                  <ion-text color="danger">Password is required.</ion-text>
+                </div>
+              </div>
 
 
-              <ion-button [routerLink]="['/parking']" type="submit" color="danger" expand="block" style="margin-top:10px">Sign In</ion-button>
+              <ion-button type="submit" color="danger" expand="block" style="margin-top:10px">Sign In</ion-button>
 
               <ion-row class="ion-text-center">
                 <ion-col>

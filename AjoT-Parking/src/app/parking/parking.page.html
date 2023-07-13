@@ -1,7 +1,7 @@
 <ion-header>
   <ion-toolbar>
     <ion-title class="ion-text-center">AjoT Parking Summary</ion-title>
-    <ion-button slot="end" style="margin-right: 10px;" [routerLink]="['/login']">
+    <ion-button slot="end" style="margin-right: 10px;" (click)="logout()">
       <ion-icon name="log-out-outline"></ion-icon>
     </ion-button>
   </ion-toolbar>
@@ -10,7 +10,7 @@
 <ion-content>
   <ion-grid>
 
-    <ion-row class="ion-justify-content-end">
+    <ion-row *ngIf="userService.isUserAdmin()" class="ion-justify-content-end">
       <ion-button style="margin-right: 10px;" (click)="openModalAddParking()">
         <ion-icon name="add-outline" slot="start"></ion-icon>Add Parking
       </ion-button>

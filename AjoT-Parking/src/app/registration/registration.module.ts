@@ -7,6 +7,8 @@ import { IonicModule } from '@ionic/angular';
 import { RegistrationPageRoutingModule } from './registration-routing.module';
 
 import { RegistrationPage } from './registration.page';
+import { MysqlService } from '../services/mysql.service';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   imports: [
@@ -14,8 +16,11 @@ import { RegistrationPage } from './registration.page';
     FormsModule,
     IonicModule,
     RegistrationPageRoutingModule,
+    HttpClientModule,
     ReactiveFormsModule
   ],
-  declarations: [RegistrationPage]
+  declarations: [RegistrationPage],
+  providers: [
+    MysqlService]
 })
 export class RegistrationPageModule {}

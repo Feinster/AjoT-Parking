@@ -16,19 +16,29 @@
               <ion-title class="title-page">Register</ion-title>
             </ion-row>
 
-            <form [formGroup]="ionicForm" (ngSubmit)="submitForm()" novalidate>
+            <form [formGroup]="registrationForm" (ngSubmit)="submitForm()" novalidate>
               <ion-item lines="full">
-                <ion-input type="text" required label="First Name" labelPlacement="floating"></ion-input>
+                <ion-input formControlName="firstName" type="text" required label="First Name" labelPlacement="floating"></ion-input>
               </ion-item>
+              <div *ngIf="registrationForm.controls?.['firstName']?.touched && registrationForm.controls?.['firstName']?.invalid">
+                <div class="error ion-padding" *ngIf="errorControl['firstName'].errors?.['required']">
+                  <ion-text color="danger">Fist Name is required.</ion-text>
+                </div>
+              </div>
 
               <ion-item lines="full">
-                <ion-input type="text" required label="Last Name" labelPlacement="floating"></ion-input>
+                <ion-input formControlName="lastName" type="text" required label="Last Name" labelPlacement="floating"></ion-input>
               </ion-item>
+              <div *ngIf="registrationForm.controls?.['lastName']?.touched && registrationForm.controls?.['lastName']?.invalid">
+                <div class="error ion-padding" *ngIf="errorControl['lastName'].errors?.['required']">
+                  <ion-text color="danger">Last Name is required.</ion-text>
+                </div>
+              </div>
 
               <ion-item lines="full">
                 <ion-input formControlName="email" type="email" required label="Email" labelPlacement="floating"></ion-input>
               </ion-item>
-              <div *ngIf="ionicForm.controls?.['email']?.touched && ionicForm.controls?.['email']?.invalid">
+              <div *ngIf="registrationForm.controls?.['email']?.touched && registrationForm.controls?.['email']?.invalid">
                 <div class="error ion-padding" *ngIf="errorControl['email'].errors?.['required']">
                   <ion-text color="danger">Email is required.</ion-text>
                 </div>
@@ -40,11 +50,11 @@
               <ion-item lines="full">
                 <ion-input formControlName="password" type="password" required label="Password" labelPlacement="floating"></ion-input>
               </ion-item>
-              <div *ngIf="ionicForm.controls?.['password']?.touched && ionicForm.controls?.['password']?.invalid">
+              <div *ngIf="registrationForm.controls?.['password']?.touched && registrationForm.controls?.['password']?.invalid">
                 <div class="error ion-padding" *ngIf="errorControl['password'].errors?.['required']">
                   <ion-text color="danger">Password is required.</ion-text>
                 </div>
-                <div class="ion-padding" color="danger" *ngIf="ionicForm.controls?.['password']?.errors?.['minlength']">
+                <div class="ion-padding" color="danger" *ngIf="registrationForm.controls?.['password']?.errors?.['minlength']">
                   <ion-text color="danger">Password should be min 10 chars long.</ion-text>
                 </div>
               </div>

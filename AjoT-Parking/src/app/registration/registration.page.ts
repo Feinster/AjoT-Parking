@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormBuilder, Validators, FormControl } from '@angular/forms';
 import { Router } from '@angular/router';
+import { MysqlService } from '../services/mysql.service';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-registration',
@@ -9,10 +11,12 @@ import { Router } from '@angular/router';
 })
 export class RegistrationPage implements OnInit {
 
-  ionicForm: FormGroup;
+  registrationForm: FormGroup;
 
-  constructor(public formBuilder: FormBuilder, private router: Router) {
-    this.ionicForm = this.formBuilder.group({
+  constructor(public formBuilder: FormBuilder, private router: Router, private mysqlService: MysqlService, private userService: UserService) {
+    this.registrationForm = this.formBuilder.group({
+      firstName: ['', [Validators.required]],
+      lastName: ['', [Validators.required]],
       email: [
         '',
         [
@@ -27,15 +31,44 @@ export class RegistrationPage implements OnInit {
   ngOnInit() { }
 
   get errorControl() {
-    return this.ionicForm.controls;
+    return this.registrationForm.controls;
   }
 
   submitForm = () => {
-    if (this.ionicForm.valid) {
-      this.router.navigate(['/parking']);
+    if (this.registrationForm.valid) {
+      this.registration(this.registrationForm.value.firstName, this.registrationForm.value.lastName, this.registrationForm.value.email, this.registrationForm.value.password);
       return false;
     } else {
+      this.validateAllFormFields(this.registrationForm);
       return console.log('Please provide all the required values!');
     }
   };
+
+  validateAllFormFields(formGroup: FormGroup) {
+    Object.keys(formGroup.controls).forEach(field => {
+      console.log(field);
+      const control = formGroup.get(field);
+      if (control instanceof FormControl) {
+        control.markAsTouched({ onlySelf: true });
+      } else if (control instanceof FormGroup) {
+        this.validateAllFormFields(control);
+      }
+    });
+  }
+
+  registration(firstName: string, lastName: string, email: string, password: string) {
+    this.mysqlService.userRegistration(firstName, lastName, email, password).subscribe({
+      next: (response) => {
+        if (response.affectedRows > 0) {
+          console.log('User registered successfully');
+          this.userService.login(email, false);
+          this.router.navigate(['/parking']);
+        } else {
+          console.log('Unregistered user');
+        }
+      },
+      error: (e) => console.error('Error verifying user credentials:', e)
+    });
+  }
+
 }
