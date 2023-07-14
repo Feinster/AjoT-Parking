@@ -3,6 +3,8 @@ import { Router } from '@angular/router';
 import { ModalController } from '@ionic/angular';
 import { ModalAddParkingPage } from '../modal-add-parking/modal-add-parking.page';
 import { UserService } from '../services/user.service';
+import { Parking } from '../models/Parking';
+import { MysqlService } from '../services/mysql.service';
 
 @Component({
   selector: 'app-parking',
@@ -11,11 +13,38 @@ import { UserService } from '../services/user.service';
 })
 export class ParkingPage implements OnInit {
 
-  constructor(private router: Router, private modalCtrl: ModalController, public userService: UserService) { }
+  parkingArray: Parking[] = [];
+
+  constructor(private router: Router, private modalCtrl: ModalController, public userService: UserService, private mysqlService: MysqlService) {
+
+    this.mysqlService.getParking().subscribe({
+      next: (response) => {
+        if (response.length > 0) {
+          console.log('Find parking');
+          response.forEach((parkingJson: any) => {
+            const parking = new Parking(
+              parkingJson.MAC,
+              parkingJson.city,
+              parkingJson.address,
+              parkingJson.location,
+              parkingJson.nStalls,
+              parkingJson.isOpen === 1 ? true : false,
+              parkingJson.img
+            );
+            this.parkingArray.push(parking);
+          });
+        } else {
+          console.log('No parking found');
+        }
+      },
+      error: (e) => console.error('Errore nella ricerca pracheggi', e)
+    });
+  }
 
   ngOnInit() { }
 
-  openStallsManagement(): void {
+  openStallsManagement(MAC: string): void {
+    console.log(MAC);
     if (this.userService.isUserAdmin()) {
       this.router.navigate(['/stalls-management']);
     }

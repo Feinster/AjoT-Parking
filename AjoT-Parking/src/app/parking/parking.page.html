@@ -16,96 +16,31 @@
       </ion-button>
     </ion-row>
 
-    <ion-row>
-      <ion-col size="12" size-sm="3">
-        <ion-card (click)="openStallsManagement()">
-          <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
+    <ion-row *ngIf="parkingArray.length > 0">
+
+      <ion-col size="12" size-sm="3" *ngFor="let parking of parkingArray">
+        <ion-card (click)="openStallsManagement(parking.MAC)" style="height: 550px;">
+          <img alt="parking image" [src]="'../../assets/' + parking.img" style="height: 290px;" />
           <ion-card-header>
-            <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Open</ion-card-subtitle>
+            <ion-card-title>{{parking.city}} - {{parking.address}} - {{parking.location}}</ion-card-title>
+            <ion-card-subtitle> {{ parking.isOpen === true ? 'Open' : 'Close' }} </ion-card-subtitle>
           </ion-card-header>
 
           <ion-card-content>
-            Stalls available: 5555 / 99999
+            Stalls available: 5555 / {{parking.nStalls}}
           </ion-card-content>
         </ion-card>
       </ion-col>
 
-      <ion-col size="12" size-sm="3">
-        <ion-card>
-          <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
-          <ion-card-header>
-            <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Open</ion-card-subtitle>
-          </ion-card-header>
+    </ion-row>
 
-          <ion-card-content>
-            Stalls available: 5555 / 99999
-          </ion-card-content>
-        </ion-card>
+    <ion-row *ngIf="parkingArray.length === 0" class="ion-justify-content-center">
+
+      <ion-col size="12" size-sm="3" class="ion-text-center">
+        <ion-text style="font-size: 30px;"> No parking found </ion-text>
       </ion-col>
 
-      <ion-col size="12" size-sm="3">
-        <ion-card>
-          <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
-          <ion-card-header>
-            <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Open</ion-card-subtitle>
-          </ion-card-header>
-
-          <ion-card-content>
-            Stalls available: 5555 / 99999
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-
-      <ion-col size="12" size-sm="3">
-        <ion-card>
-          <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
-          <ion-card-header>
-            <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Open</ion-card-subtitle>
-          </ion-card-header>
-
-          <ion-card-content>
-            Stalls available: 5555 / 99999
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-
-      <ion-col size="12" size-sm="3">
-        <ion-card>
-          <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
-          <ion-card-header>
-            <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Open</ion-card-subtitle>
-          </ion-card-header>
-
-          <ion-card-content>
-            Stalls available: 5555 / 99999
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
-
-
-      <ion-col size="12" size-sm="3">
-        <ion-card>
-          <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" />
-          <ion-card-header>
-            <ion-card-title>Nome Parcheggio</ion-card-title>
-            <ion-card-subtitle>Open</ion-card-subtitle>
-          </ion-card-header>
-
-          <ion-card-content>
-            Stalls available: 5555 / 99999
-          </ion-card-content>
-        </ion-card>
-      </ion-col>
     </ion-row>
   </ion-grid>
-
-
 
 </ion-content>

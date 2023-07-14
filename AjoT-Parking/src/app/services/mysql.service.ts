@@ -27,7 +27,12 @@ export class MysqlService {
   }
 
   userRegistration(firstName: string, lastName: string, email: string, password: string): Observable<any> {
-    const url = `${this.baseUrl}/api/userRegistration?firstName=${firstName}&${lastName}&email=${email}&password=${password}`;
+    const url = `${this.baseUrl}/api/userRegistration?firstName=${firstName}&lastName=${lastName}&email=${email}&password=${password}`;
+    return this.http.get(url);
+  }
+
+  parkingInsertion(MAC: string, city: string, address: string, location: string, nStalls: number, isOpen: boolean, img: string): Observable<any> {
+    const url = `${this.baseUrl}/api/parkingInsertion?MAC=${MAC}&city=${city}&address=${address}&location=${location}&nStalls=${nStalls}&isOpen=${isOpen}&img=${img}`;
     return this.http.get(url);
   }
 }

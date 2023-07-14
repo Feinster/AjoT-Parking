@@ -71,6 +71,23 @@ app.get('/api/parking', (req, res) => {
     });
 });
 
+app.get('/api/parkingInsertion', (req, res) => {
+    const MAC = req.query.MAC;
+    const city = req.query.city;
+    const address = req.query.address;
+    const location = req.query.location;
+    const nStalls = req.query.nStalls;
+    const isOpen = req.query.isOpen;
+    const img = req.query.img;
+
+    const query = `INSERT INTO parking (MAC, city, address, location, nStalls, isOpen, img) VALUES ('${MAC}', '${city}', '${address}', '${location}' , '${nStalls}', '${isOpen}', '${img}')`;
+
+    connection.query(query, (error, results) => {
+        if (error) throw error;
+        res.json(results);
+    });
+});
+
 const port = 3000; // The port on which Node.js will run
 
 app.listen(port, () => {

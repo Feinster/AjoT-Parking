@@ -8,30 +8,81 @@
 </ion-header>
 
 <ion-content [fullscreen]="true">
-  <form>
+  <form [formGroup]="addParkingForm" (ngSubmit)="submitForm()" novalidate>
     <ion-item lines="full">
-      <ion-input type="text" required label="Name" labelPlacement="floating"></ion-input>
+      <ion-input formControlName="MAC" type="text" required label="MAC" labelPlacement="floating"></ion-input>
     </ion-item>
+    <div *ngIf="addParkingForm.controls?.['MAC']?.touched && addParkingForm.controls?.['MAC']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['MAC'].errors?.['required']">
+        <ion-text color="danger">MAC is required.</ion-text>
+      </div>
+    </div>
 
     <ion-item lines="full">
-      <ion-input type="number" inputmode="numeric" type="number" (keypress)="numericOnly($event)" required label="Number of stalls" labelPlacement="floating"></ion-input>
+      <ion-input formControlName="city" type="text" required label="City" labelPlacement="floating"></ion-input>
     </ion-item>
+    <div *ngIf="addParkingForm.controls?.['city']?.touched && addParkingForm.controls?.['city']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['city'].errors?.['required']">
+        <ion-text color="danger">City is required.</ion-text>
+      </div>
+    </div>
 
-    <ion-radio-group>
+    <ion-item lines="full">
+      <ion-input formControlName="address" type="text" required label="Address" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="addParkingForm.controls?.['address']?.touched && addParkingForm.controls?.['address']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['address'].errors?.['required']">
+        <ion-text color="danger">Address is required.</ion-text>
+      </div>
+    </div>
+
+    <ion-item lines="full">
+      <ion-input formControlName="location" type="text" required label="Location" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="addParkingForm.controls?.['location']?.touched && addParkingForm.controls?.['location']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['location'].errors?.['required']">
+        <ion-text color="danger">Location is required.</ion-text>
+      </div>
+    </div>
+
+    <ion-item lines="full">
+      <ion-input formControlName="imageName" type="text" required label="Image Name" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="addParkingForm.controls?.['imageName']?.touched && addParkingForm.controls?.['imageName']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['imageName'].errors?.['required']">
+        <ion-text color="danger">Image Name is required.</ion-text>
+      </div>
+    </div>
+
+    <ion-item lines="full">
+      <ion-input formControlName="nStalls" type="number" inputmode="numeric" type="number" (keypress)="numericOnly($event)" required label="Number of stalls" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="addParkingForm.controls?.['nStalls']?.touched && addParkingForm.controls?.['nStalls']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['nStalls'].errors?.['required']">
+        <ion-text color="danger">Number of stalls is required.</ion-text>
+      </div>
+    </div>
+
+    <ion-radio-group formControlName="isOpen">
       <ion-list-header>
         <ion-label>Status</ion-label>
       </ion-list-header>
 
       <ion-item>
         <ion-label>Open</ion-label>
-        <ion-radio value="open"></ion-radio>
+        <ion-radio value="1"></ion-radio>
       </ion-item>
 
       <ion-item>
         <ion-label>Close</ion-label>
-        <ion-radio value="close"></ion-radio>
+        <ion-radio value="0"></ion-radio>
       </ion-item>
     </ion-radio-group>
+    <div *ngIf="addParkingForm.controls?.['isOpen']?.touched && addParkingForm.controls?.['isOpen']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['isOpen'].errors?.['required']">
+        <ion-text color="danger">Status is required.</ion-text>
+      </div>
+    </div>
 
     <ion-row>
       <ion-col>
