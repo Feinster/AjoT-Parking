@@ -62,7 +62,7 @@ app.get('/api/userRegistration', (req, res) => {
 });
 
 app.get('/api/parking', (req, res) => {
-    const query = 'SELECT * FROM parking';
+    const query = 'SELECT p.*, COUNT(s.id) AS occupiedStalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING GROUP BY p.MAC';
 
     connection.query(query, (error, results) => {
         console.log(results);
@@ -87,6 +87,65 @@ app.get('/api/parkingInsertion', (req, res) => {
         res.json(results);
     });
 });
+
+app.get('/api/stalls', (req, res) => {
+    const MAC = req.query.MAC;
+    const query = `SELECT * FROM stalls WHERE MAC_PARKING = ${MAC}`;
+
+    connection.query(query, (error, results) => {
+        if (error) throw error;
+        res.json(results);
+    });
+});
+
+app.get('/api/parkingByMAC', (req, res) => {
+    const MAC = req.query.MAC;
+    const query = `SELECT p.*, COUNT(s.id) AS occupiedStalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING WHERE MAC = ${MAC} GROUP BY p.MAC`;
+
+    connection.query(query, (error, results) => {
+        if (error) throw error;
+        res.json(results);
+    });
+});
+
+app.get('/api/stallInsertion', (req, res) => {
+    const id = req.query.id;
+    const GPIO = req.query.GPIO;
+    const MAC_PARKING = req.query.MAC_PARKING;
+    const isFree = req.query.isFree;
+
+    const query = `INSERT INTO stalls (id, GPIO, MAC_PARKING, isFree) VALUES ('${id}', '${GPIO}', '${MAC_PARKING}' , ${isFree})`;
+
+    connection.query(query, (error, results) => {
+        if (error) throw error;
+        res.json(results);
+    });
+});
+
+app.get('/api/changeStatusParking', (req, res) => {
+    const MAC = req.query.MAC;
+    const newStatus = req.query.newStatus
+
+    const query = `UPDATE parking SET isOpen = ${newStatus} WHERE MAC = '${MAC}'`;
+
+    connection.query(query, (error, results) => {
+        if (error) throw error;
+        res.json(results);
+    });
+});
+
+app.get('/api/deleteStall', (req, res) => {
+    const MAC = req.query.MAC;
+    const id = req.query.id
+
+    const query = `DELETE FROM stalls WHERE (id = '${id}') and (MAC_PARKING = '${MAC}')`;
+
+    connection.query(query, (error, results) => {
+        if (error) throw error;
+        res.json(results);
+    });
+});
+
 
 const port = 3000; // The port on which Node.js will run
 

@@ -20,7 +20,6 @@ export class ModalAddParkingPage implements OnInit {
       address: ['', [Validators.required]],
       location: ['', [Validators.required]],
       imageName: ['', [Validators.required]],
-      nStalls: ['', [Validators.required]],
       isOpen: ['', [Validators.required]],
     });
   }
@@ -44,7 +43,7 @@ export class ModalAddParkingPage implements OnInit {
   submitForm = () => {
     if (this.addParkingForm.valid) {
       var parking: Parking = new Parking(this.addParkingForm.value.MAC, this.addParkingForm.value.city, this.addParkingForm.value.address,
-        this.addParkingForm.value.location, this.addParkingForm.value.nStalls, this.addParkingForm.value.isOpen, this.addParkingForm.value.imageName);
+        this.addParkingForm.value.location, 0, this.addParkingForm.value.isOpen, this.addParkingForm.value.imageName, 0);
       this.parkingInsertion(parking);
       return false;
     } else {

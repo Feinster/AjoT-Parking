@@ -15,12 +15,47 @@ export class ParkingPage implements OnInit {
 
   parkingArray: Parking[] = [];
 
-  constructor(private router: Router, private modalCtrl: ModalController, public userService: UserService, private mysqlService: MysqlService) {
+  constructor(private router: Router, private modalCtrl: ModalController, public userService: UserService, private mysqlService: MysqlService) { }
 
+  ngOnInit() { }
+
+  ionViewWillEnter() {
+    this.getParking();
+  }
+
+  openStallsManagement(MAC: string): void {
+    if (this.userService.isUserAdmin()) {
+      this.router.navigate(['/stalls-management'], { queryParams: { MAC: MAC } });
+    }
+  }
+
+  openModalAddParking(): void {
+    this.presentModalAddParking();
+  }
+
+  async presentModalAddParking() {
+    const modal = await this.modalCtrl.create({
+      component: ModalAddParkingPage,
+    });
+
+    modal.onDidDismiss().then((data) => {
+      this.getParking();
+    });
+
+    await modal.present();
+  }
+
+  logout(): void {
+    this.userService.logout();
+    this.router.navigate(['/login']);
+  }
+
+  getParking(): void {
+    this.parkingArray = [];
     this.mysqlService.getParking().subscribe({
       next: (response) => {
         if (response.length > 0) {
-          console.log('Find parking');
+          console.log('Parking found', response);
           response.forEach((parkingJson: any) => {
             const parking = new Parking(
               parkingJson.MAC,
@@ -29,7 +64,8 @@ export class ParkingPage implements OnInit {
               parkingJson.location,
               parkingJson.nStalls,
               parkingJson.isOpen === 1 ? true : false,
-              parkingJson.img
+              parkingJson.img,
+              parkingJson.occupiedStalls
             );
             this.parkingArray.push(parking);
           });
@@ -37,32 +73,7 @@ export class ParkingPage implements OnInit {
           console.log('No parking found');
         }
       },
-      error: (e) => console.error('Errore nella ricerca pracheggi', e)
+      error: (e) => console.error('Errore searching parking', e)
     });
-  }
-
-  ngOnInit() { }
-
-  openStallsManagement(MAC: string): void {
-    console.log(MAC);
-    if (this.userService.isUserAdmin()) {
-      this.router.navigate(['/stalls-management']);
-    }
-  }
-
-  openModalAddParking(): void {
-    this.presentModal();
-  }
-
-  async presentModal() {
-    const modal = await this.modalCtrl.create({
-      component: ModalAddParkingPage,
-    });
-    await modal.present();
-  }
-
-  logout(): void {
-    this.userService.logout();
-    this.router.navigate(['/login']);
   }
 }

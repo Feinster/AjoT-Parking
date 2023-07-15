@@ -1,0 +1,36 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Add new stall</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="addStallForm" (ngSubmit)="submitForm()" novalidate>
+    <ion-item lines="full">
+      <ion-input formControlName="id" type="text" required label="id" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="addStallForm.controls?.['id']?.touched && addStallForm.controls?.['id']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['id'].errors?.['required']">
+        <ion-text color="danger">Id is required.</ion-text>
+      </div>
+    </div>
+
+    <ion-item lines="full">
+      <ion-input formControlName="GPIO" type="text" required label="GPIO" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="addStallForm.controls?.['GPIO']?.touched && addStallForm.controls?.['GPIO']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['GPIO'].errors?.['required']">
+        <ion-text color="danger">GPIO is required.</ion-text>
+      </div>
+    </div>
+
+    <ion-row>
+      <ion-col>
+        <ion-button type="submit" color="success" expand="block">Insert</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

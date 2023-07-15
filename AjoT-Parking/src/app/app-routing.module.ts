@@ -39,6 +39,10 @@ const routes: Routes = [
     path: 'modal-add-parking',
     loadChildren: () => import('./modal-add-parking/modal-add-parking.module').then( m => m.ModalAddParkingPageModule)
   },
+  {
+    path: 'modal-add-stall',
+    loadChildren: () => import('./modal-add-stall/modal-add-stall.module').then( m => m.ModalAddStallPageModule)
+  },
 ];
 
 @NgModule({
