@@ -9,6 +9,7 @@ import { LoginPageRoutingModule } from './login-routing.module';
 import { LoginPage } from './login.page';
 import { HttpClientModule } from '@angular/common/http';
 import { MysqlService } from '../services/mysql.service';
+import { DynamoDbClientService } from '../services/dynamo-db-client.service';
 
 @NgModule({
   imports: [
@@ -21,6 +22,6 @@ import { MysqlService } from '../services/mysql.service';
   ],
   declarations: [LoginPage],
   providers: [
-    MysqlService]
+    MysqlService, DynamoDbClientService]
 })
 export class LoginPageModule {}

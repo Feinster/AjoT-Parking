@@ -7,7 +7,7 @@ import { Observable } from 'rxjs';
 })
 export class MysqlService {
 
-  private baseUrl = 'http://localhost:3000'; // L'URL del tuo backend
+  private baseUrl = 'http://localhost:3000'; // back-end url
 
   constructor(private http: HttpClient) { }
 

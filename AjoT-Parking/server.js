@@ -1,4 +1,7 @@
 const express = require('express');
+const {
+    getSensorValues
+} = require('./dynamo');
 var mysql = require('mysql');
 const cors = require('cors');
 const {
@@ -146,6 +149,17 @@ app.get('/api/deleteStall', (req, res) => {
     });
 });
 
+app.get('/api/sensorValues', async(req, res) => {
+    try {
+        const values = await getSensorValues();
+        res.json(values);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
+});
 
 const port = 3000; // The port on which Node.js will run
 

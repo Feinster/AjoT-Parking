@@ -8,9 +8,9 @@ AWS.config.update({
 });
 
 const dynamoClient = new AWS.DynamoDB.DocumentClient();
-const TABLE_NAME = "Users"
+const TABLE_NAME = "AjoT_sensorValues"
 
-const getCharacters = async() => {
+const getSensorValues = async() => {
     const params = {
         TableName: TABLE_NAME
     };
@@ -28,8 +28,9 @@ const addOrUpdateCharacter = async(character) => {
     return await dynamoClient.put(params).promise();
 }
 
-getCharacters();
+//getCharacters();
 
+/*
 const hp = {
     "id": "0",
     "username": "matteo@hotmail.it",
@@ -55,12 +56,11 @@ const deleteCharacter = async(id) => {
     };
     return await dynamoClient.delete(params).promise();
 }
-
+*/
 module.exports = {
-    dynamoClient,
-    getCharacters,
-    getCharactersById,
-    deleteCharacter
-}
-
-//addOrUpdateCharacter(hp);
+        dynamoClient,
+        getSensorValues,
+        //getCharactersById,
+        //deleteCharacter
+    }
+    //addOrUpdateCharacter(hp);
