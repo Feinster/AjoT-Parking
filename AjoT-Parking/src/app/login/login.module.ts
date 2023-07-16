@@ -22,6 +22,6 @@ import { DynamoDbClientService } from '../services/dynamo-db-client.service';
   ],
   declarations: [LoginPage],
   providers: [
-    MysqlService, DynamoDbClientService]
+    MysqlService]
 })
 export class LoginPageModule {}

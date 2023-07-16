@@ -9,6 +9,7 @@ import { StallsManagementPageRoutingModule } from './stalls-management-routing.m
 import { StallsManagementPage } from './stalls-management.page';
 import { HttpClientModule } from '@angular/common/http';
 import { MysqlService } from '../services/mysql.service';
+import { DynamoDbClientService } from '../services/dynamo-db-client.service';
 
 @NgModule({
   imports: [
@@ -20,6 +21,6 @@ import { MysqlService } from '../services/mysql.service';
   ],
   declarations: [StallsManagementPage],
   providers: [
-    MysqlService]
+    MysqlService, DynamoDbClientService]
 })
 export class StallsManagementPageModule {}

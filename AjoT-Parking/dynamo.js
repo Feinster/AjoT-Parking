@@ -15,8 +15,20 @@ const getSensorValues = async() => {
         TableName: TABLE_NAME
     };
     const characters = await dynamoClient.scan(params).promise();
-    console.log(characters);
     return characters;
+}
+
+const getSensorValuesByIdAndMacAndTime = async(id, MAC, time) => {
+    const params = {
+        TableName: TABLE_NAME,
+        FilterExpression: 'stall_id = :stall_id AND MAC_address = :MAC_address AND time_microseconds > :today',
+        ExpressionAttributeValues: {
+            ":stall_id": parseInt(id),
+            ":MAC_address": MAC,
+            ":today": parseInt(time)
+        },
+    }
+    return await dynamoClient.scan(params).promise();
 }
 
 const addOrUpdateCharacter = async(character) => {
@@ -60,6 +72,7 @@ const deleteCharacter = async(id) => {
 module.exports = {
         dynamoClient,
         getSensorValues,
+        getSensorValuesByIdAndMacAndTime
         //getCharactersById,
         //deleteCharacter
     }

@@ -1,6 +1,7 @@
 const express = require('express');
 const {
-    getSensorValues
+    getSensorValues,
+    getSensorValuesByIdAndMacAndTime
 } = require('./dynamo');
 var mysql = require('mysql');
 const cors = require('cors');
@@ -93,7 +94,7 @@ app.get('/api/parkingInsertion', (req, res) => {
 
 app.get('/api/stalls', (req, res) => {
     const MAC = req.query.MAC;
-    const query = `SELECT * FROM stalls WHERE MAC_PARKING = ${MAC}`;
+    const query = `SELECT * FROM stalls WHERE MAC_PARKING = '${MAC}'`;
 
     connection.query(query, (error, results) => {
         if (error) throw error;
@@ -103,7 +104,7 @@ app.get('/api/stalls', (req, res) => {
 
 app.get('/api/parkingByMAC', (req, res) => {
     const MAC = req.query.MAC;
-    const query = `SELECT p.*, COUNT(s.id) AS occupiedStalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING WHERE MAC = ${MAC} GROUP BY p.MAC`;
+    const query = `SELECT p.*, COUNT(s.id) AS occupiedStalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING WHERE MAC = '${MAC}' GROUP BY p.MAC`;
 
     connection.query(query, (error, results) => {
         if (error) throw error;
@@ -152,6 +153,21 @@ app.get('/api/deleteStall', (req, res) => {
 app.get('/api/sensorValues', async(req, res) => {
     try {
         const values = await getSensorValues();
+        res.json(values);
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
+});
+
+app.get('/api/getSensorValuesByIdAndMacAndTime', async(req, res) => {
+    try {
+        const id = req.query.id
+        const MAC = req.query.MAC;
+        const time = req.query.time;
+        const values = await getSensorValuesByIdAndMacAndTime(id, MAC, time);
         res.json(values);
     } catch (error) {
         console.error(error);

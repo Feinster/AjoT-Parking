@@ -6,6 +6,8 @@ import { MysqlService } from '../services/mysql.service';
 import { Stall } from '../models/Stall';
 import { Parking } from '../models/Parking';
 import { ModalAddStallPage } from '../modal-add-stall/modal-add-stall.page';
+import { DynamoDbClientService } from '../services/dynamo-db-client.service';
+import { SensorValue } from '../models/SensorValue';
 
 @Component({
   selector: 'app-stalls-management',
@@ -17,8 +19,9 @@ export class StallsManagementPage implements OnInit {
   MAC: string = "";
   stallsArray: Stall[] = [];
   parking: Parking | undefined;
+  sensorValuesArray: SensorValue[] = [];
 
-  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService) { }
+  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService, private dynamoService: DynamoDbClientService) { }
 
   ngOnInit() { }
 
@@ -30,13 +33,18 @@ export class StallsManagementPage implements OnInit {
     this.getParkingByMac(this.MAC);
   }
 
-  openModalInfo(): void {
-    this.presentModalInfo();
+  openModalInfo(id: number): void {
+    const currentDate = new Date();
+    currentDate.setHours(0, 0, 0, 0);
+    const time = currentDate.getTime() * 1000;
+    this.getSensorValuesByIdAndMacAndTime(id, time);
   }
 
-  async presentModalInfo() {
+  async presentModalInfo(brightness: any) {
+    console.log("brightness:", brightness)
     const modal = await this.modalCtrl.create({
       component: ModalInfoPage,
+      componentProps: { 'brightness': brightness }
     });
     await modal.present();
   }
@@ -136,6 +144,34 @@ export class StallsManagementPage implements OnInit {
 
     this.getStalls(this.MAC);
     this.getParkingByMac(this.MAC);
+  }
+
+  getSensorValuesByIdAndMacAndTime(id: number, time: number): void {
+    this.dynamoService.getSensorValuesByIdAndMacAndTime(id, this.MAC, time).subscribe({
+      next: (response) => {
+        if (response.Count > 0) {
+          const itemsArray = response.Items;
+          this.sensorValuesArray = itemsArray.map((item: any) => {
+            return new SensorValue(
+              item.brightness_value,
+              item.MAC_address,
+              item.stall_id,
+              item.time_microseconds,
+            );
+          });
+          console.log(this.sensorValuesArray);
+        
+          const averageBrightnessPerHour = SensorValue.calculateAverageBrightnessPerHour(this.sensorValuesArray);
+          console.log(averageBrightnessPerHour);
+          const brightness = averageBrightnessPerHour.map((sensor) => sensor.averageBrightness);
+          this.presentModalInfo(brightness);
+
+        } else {
+          console.log('No sensor values');
+        }
+      },
+      error: (e) => console.error('Error getting sensor values:', e)
+    });
   }
 
 }

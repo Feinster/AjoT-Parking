@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, Input, OnInit } from '@angular/core';
 import { ModalController } from '@ionic/angular';
 import {Chart} from 'chart.js/auto';
 
@@ -8,6 +8,8 @@ import {Chart} from 'chart.js/auto';
   styleUrls: ['./modal-info.page.scss'],
 })
 export class ModalInfoPage implements OnInit {
+  
+  @Input() brightness: any;
   chart: any;
 
   constructor(private modalCtrl: ModalController) { }
@@ -21,7 +23,7 @@ export class ModalInfoPage implements OnInit {
       datasets: [
         {
           label: 'Brightness',
-          data: [10, 50, 25, 70, 40],
+          data: this.brightness,
           backgroundColor: 'blue',
           borderColor: 'lightblue',
           fill: false,

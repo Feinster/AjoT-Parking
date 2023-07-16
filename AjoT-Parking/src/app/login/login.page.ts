@@ -4,6 +4,7 @@ import { MysqlService } from '../services/mysql.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
 import { DynamoDbClientService } from '../services/dynamo-db-client.service';
+import { SensorValue } from '../models/SensorValue';
 
 @Component({
   selector: 'app-login',
@@ -14,26 +15,14 @@ export class LoginPage implements OnInit {
 
   loginForm: FormGroup;
 
-  constructor(private router: Router, private mysqlService: MysqlService, public formBuilder: FormBuilder, private userService: UserService, private dynamoService: DynamoDbClientService) {
+  constructor(private router: Router, private mysqlService: MysqlService, public formBuilder: FormBuilder, private userService: UserService) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required,],],
       password: ['', [Validators.required]],
     });
   }
 
-  ngOnInit() {
-    this.dynamoService.getSensorValues().subscribe({
-      next: (response) => {
-        console.log(response);
-        if (response.length > 0) {
-          console.log('VaASFals');
-        } else {
-          console.log('ASFs');
-        }
-      },
-      error: (e) => console.error('ASF:', e)
-    });
-   }
+  ngOnInit() { }
 
   get errorControl() {
     return this.loginForm.controls;
@@ -65,7 +54,7 @@ export class LoginPage implements OnInit {
       this.validateAllFormFields(this.loginForm);
     }
   };
-  
+
   validateAllFormFields(formGroup: FormGroup) {
     Object.keys(formGroup.controls).forEach(field => {
       console.log(field);
