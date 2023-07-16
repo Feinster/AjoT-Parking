@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController } from '@ionic/angular';
+import { ModalController, ToastController } from '@ionic/angular';
 import { ModalInfoPage } from '../modal-info/modal-info.page';
 import { ActivatedRoute, Router } from '@angular/router';
 import { MysqlService } from '../services/mysql.service';
@@ -21,7 +21,7 @@ export class StallsManagementPage implements OnInit {
   parking: Parking | undefined;
   sensorValuesArray: SensorValue[] = [];
 
-  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService, private dynamoService: DynamoDbClientService) { }
+  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService, private dynamoService: DynamoDbClientService, private toastController: ToastController) { }
 
   ngOnInit() { }
 
@@ -168,10 +168,21 @@ export class StallsManagementPage implements OnInit {
 
         } else {
           console.log('No sensor values');
+          this.presentToast("Not enough data");
         }
       },
       error: (e) => console.error('Error getting sensor values:', e)
     });
   }
 
+  async presentToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000,
+      position: 'top',
+      color: 'warning',
+      //cssClass: "toast-custom-class",
+    });
+    toast.present();
+  }
 }
