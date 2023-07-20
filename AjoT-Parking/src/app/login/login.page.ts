@@ -3,8 +3,6 @@ import { Router } from '@angular/router';
 import { MysqlService } from '../services/mysql.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
-import { DynamoDbClientService } from '../services/dynamo-db-client.service';
-import { SensorValue } from '../models/SensorValue';
 
 @Component({
   selector: 'app-login',

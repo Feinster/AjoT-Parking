@@ -9,7 +9,7 @@ import { LoginPageRoutingModule } from './login-routing.module';
 import { LoginPage } from './login.page';
 import { HttpClientModule } from '@angular/common/http';
 import { MysqlService } from '../services/mysql.service';
-import { DynamoDbClientService } from '../services/dynamo-db-client.service';
+import { AwsIotService } from '../services/aws-iot.service';
 
 @NgModule({
   imports: [

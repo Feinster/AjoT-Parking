@@ -65,7 +65,7 @@ export class ParkingPage implements OnInit {
               parkingJson.nStalls,
               parkingJson.isOpen === 1 ? true : false,
               parkingJson.img,
-              parkingJson.occupiedStalls
+              parkingJson.availableStalls
             );
             this.parkingArray.push(parking);
           });

@@ -20,5 +20,4 @@ export class DynamoDbClientService {
     const url = `${this.baseUrl}/api/getSensorValuesByIdAndMacAndTime?id=${id}&MAC=${MAC}&time=${time}`;
     return this.http.get(url);
   }
-
 }

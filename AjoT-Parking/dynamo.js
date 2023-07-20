@@ -31,6 +31,15 @@ const getSensorValuesByIdAndMacAndTime = async(id, MAC, time) => {
     return await dynamoClient.scan(params).promise();
 }
 
+module.exports = {
+    dynamoClient,
+    getSensorValues,
+    getSensorValuesByIdAndMacAndTime
+}
+
+/*
+//getCharacters();
+
 const addOrUpdateCharacter = async(character) => {
     const params = {
         TableName: TABLE_NAME,
@@ -40,9 +49,6 @@ const addOrUpdateCharacter = async(character) => {
     return await dynamoClient.put(params).promise();
 }
 
-//getCharacters();
-
-/*
 const hp = {
     "id": "0",
     "username": "matteo@hotmail.it",
@@ -69,11 +75,4 @@ const deleteCharacter = async(id) => {
     return await dynamoClient.delete(params).promise();
 }
 */
-module.exports = {
-        dynamoClient,
-        getSensorValues,
-        getSensorValuesByIdAndMacAndTime
-        //getCharactersById,
-        //deleteCharacter
-    }
-    //addOrUpdateCharacter(hp);
+//addOrUpdateCharacter(hp);

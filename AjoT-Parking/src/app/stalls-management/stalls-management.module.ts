@@ -10,6 +10,8 @@ import { StallsManagementPage } from './stalls-management.page';
 import { HttpClientModule } from '@angular/common/http';
 import { MysqlService } from '../services/mysql.service';
 import { DynamoDbClientService } from '../services/dynamo-db-client.service';
+import { AwsIotService } from '../services/aws-iot.service';
+import { WebSocketService } from '../services/web-socket.service';
 
 @NgModule({
   imports: [
@@ -21,6 +23,6 @@ import { DynamoDbClientService } from '../services/dynamo-db-client.service';
   ],
   declarations: [StallsManagementPage],
   providers: [
-    MysqlService, DynamoDbClientService]
+    MysqlService, DynamoDbClientService, AwsIotService, WebSocketService]
 })
 export class StallsManagementPageModule {}

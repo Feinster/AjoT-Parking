@@ -6,15 +6,20 @@ const {
 var mysql = require('mysql');
 const cors = require('cors');
 const {
-    last,
-    first
-} = require('rxjs');
+    getThingShadow,
+    updateThingShadow,
+    subscribeStatus
+} = require('./awsIotUtils');
 require('dotenv').config();
 
+// Create an Express application
 const app = express();
+// Enable CORS (Cross-Origin Resource Sharing) middleware to allow cross-origin requests
 app.use(cors());
+// Enable middleware to parse incoming requests with JSON payloads
+app.use(express.json());
 
-var connection = mysql.createConnection({
+var mysqlConnection = mysql.createConnection({
     host: process.env.RDS_HOSTNAME,
     user: process.env.RDS_USERNAME,
     password: process.env.RDS_PASSWORD,
@@ -22,7 +27,7 @@ var connection = mysql.createConnection({
     database: process.env.RDS_DATABASE
 });
 
-connection.connect(function(err) {
+mysqlConnection.connect(function(err) {
     if (err) {
         console.error('Database connection failed: ' + err.stack);
         return;
@@ -32,122 +37,212 @@ connection.connect(function(err) {
 });
 
 app.get('/api/users', (req, res) => {
-    const query = 'SELECT * FROM users';
+    try {
+        const query = 'SELECT * FROM users';
 
-    connection.query(query, (error, results) => {
-        console.log(results);
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            console.log(results);
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
 app.get('/api/user', (req, res) => {
-    const email = req.query.email;
-    const password = req.query.password;
-    const query = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
+    try {
+        const email = req.query.email;
+        const password = req.query.password;
+        const query = `SELECT * FROM users WHERE email = '${email}' AND password = '${password}'`;
 
-    connection.query(query, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
-app.get('/api/userRegistration', (req, res) => {
-    const firstName = req.query.firstName;
-    const lastName = req.query.lastName;
-    const email = req.query.email;
-    const password = req.query.password;
-    const query = `INSERT INTO users (firstName, lastName, email, password) VALUES ('${firstName}', '${lastName}', '${email}', '${password}')`;
+app.post('/api/userRegistration', (req, res) => {
+    try {
+        const firstName = req.body.firstName;
+        const lastName = req.body.lastName;
+        const email = req.body.email;
+        const password = req.body.password;
+        const query = `INSERT INTO users (firstName, lastName, email, password) VALUES ('${firstName}', '${lastName}', '${email}', '${password}')`;
 
-    connection.query(query, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
 app.get('/api/parking', (req, res) => {
-    const query = 'SELECT p.*, COUNT(s.id) AS occupiedStalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING GROUP BY p.MAC';
+    try {
+        const query = 'SELECT p.*, COUNT(s.id) AS availableStalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING AND s.isFree = 1 GROUP BY p.MAC;';
 
-    connection.query(query, (error, results) => {
-        console.log(results);
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            console.log(results);
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
-app.get('/api/parkingInsertion', (req, res) => {
-    const MAC = req.query.MAC;
-    const city = req.query.city;
-    const address = req.query.address;
-    const location = req.query.location;
-    const nStalls = req.query.nStalls;
-    const isOpen = req.query.isOpen;
-    const img = req.query.img;
+app.post('/api/parkingInsertion', (req, res) => {
+    try {
+        const MAC = req.body.MAC;
+        const city = req.body.city;
+        const address = req.body.address;
+        const location = req.body.location;
+        const nStalls = req.body.nStalls;
+        const isOpen = req.body.isOpen;
+        const img = req.body.img;
 
-    const query = `INSERT INTO parking (MAC, city, address, location, nStalls, isOpen, img) VALUES ('${MAC}', '${city}', '${address}', '${location}' , '${nStalls}', '${isOpen}', '${img}')`;
+        const query = `INSERT INTO parking (MAC, city, address, location, nStalls, isOpen, img) VALUES ('${MAC}', '${city}', '${address}', '${location}', '${nStalls}', '${isOpen}', '${img}')`;
 
-    connection.query(query, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
 app.get('/api/stalls', (req, res) => {
-    const MAC = req.query.MAC;
-    const query = `SELECT * FROM stalls WHERE MAC_PARKING = '${MAC}'`;
+    try {
+        const MAC = req.query.MAC;
+        const query = `SELECT * FROM stalls WHERE MAC_PARKING = '${MAC}'`;
 
-    connection.query(query, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
 app.get('/api/parkingByMAC', (req, res) => {
-    const MAC = req.query.MAC;
-    const query = `SELECT p.*, COUNT(s.id) AS occupiedStalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING WHERE MAC = '${MAC}' GROUP BY p.MAC`;
+    try {
+        const MAC = req.query.MAC;
+        const query = `SELECT p.*, COUNT(s.id) AS availableStalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING AND s.isFree = 1 WHERE MAC = '${MAC}' GROUP BY p.MAC`;
 
-    connection.query(query, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
-app.get('/api/stallInsertion', (req, res) => {
-    const id = req.query.id;
-    const GPIO = req.query.GPIO;
-    const MAC_PARKING = req.query.MAC_PARKING;
-    const isFree = req.query.isFree;
+app.post('/api/stallInsertion', (req, res) => {
+    try {
+        const id = req.body.id;
+        const GPIO = req.body.GPIO;
+        const MAC_PARKING = req.body.MAC_PARKING;
+        const isFree = req.body.isFree;
 
-    const query = `INSERT INTO stalls (id, GPIO, MAC_PARKING, isFree) VALUES ('${id}', '${GPIO}', '${MAC_PARKING}' , ${isFree})`;
+        const query = `INSERT INTO stalls (id, GPIO, MAC_PARKING, isFree) VALUES ('${id}', '${GPIO}', '${MAC_PARKING}', ${isFree})`;
 
-    connection.query(query, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
-app.get('/api/changeStatusParking', (req, res) => {
-    const MAC = req.query.MAC;
-    const newStatus = req.query.newStatus
+app.post('/api/changeStatusParking', (req, res) => {
+    try {
+        const MAC = req.body.MAC;
+        const newStatus = req.body.newStatus;
 
-    const query = `UPDATE parking SET isOpen = ${newStatus} WHERE MAC = '${MAC}'`;
+        const query = `UPDATE parking SET isOpen = ${newStatus} WHERE MAC = '${MAC}'`;
 
-    connection.query(query, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
-app.get('/api/deleteStall', (req, res) => {
-    const MAC = req.query.MAC;
-    const id = req.query.id
+app.post('/api/changeStatusStall', (req, res) => {
+    try {
+        const MAC = req.body.MAC;
+        const newStatus = req.body.newStatus;
+        const id = req.body.id;
 
-    const query = `DELETE FROM stalls WHERE (id = '${id}') and (MAC_PARKING = '${MAC}')`;
+        const query = `UPDATE stalls SET isFree = ${newStatus} WHERE MAC_PARKING = '${MAC}' AND id = '${id}'`;
 
-    connection.query(query, (error, results) => {
-        if (error) throw error;
-        res.json(results);
-    });
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
+});
+
+app.post('/api/deleteStall', (req, res) => {
+    try {
+        const MAC = req.body.MAC;
+        const id = req.body.id;
+
+        const query = `DELETE FROM stalls WHERE (id = '${id}') and (MAC_PARKING = '${MAC}')`;
+
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
 });
 
 app.get('/api/sensorValues', async(req, res) => {
@@ -177,10 +272,59 @@ app.get('/api/getSensorValuesByIdAndMacAndTime', async(req, res) => {
     }
 });
 
+app.get('/api/getThingShadow', (req, res) => {
+    const MAC = req.query.MAC;
+
+    getThingShadow(MAC)
+        .then((data) => {
+            return res.json(data);
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                error: 'Error in GET request ' + error
+            });
+        });
+});
+
+app.get('/api/subscribeStatus', (req, res) => {
+    const MAC = req.query.MAC;
+
+    subscribeStatus(MAC)
+        .then((data) => {
+            return res.json(data);
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                error: 'Error in GET request ' + error
+            });
+        });
+});
+
+app.post('/api/updateThingShadow', (req, res) => {
+    const MAC = req.body.MAC;
+    const body = req.body.body;
+
+    if (!MAC || !body) {
+        return res.status(400).json({
+            error: 'MAC and body fields are required in the request body'
+        });
+    }
+
+    updateThingShadow(MAC, body)
+        .then((data) => {
+            return res.json(data);
+        })
+        .catch((error) => {
+            return res.status(500).json({
+                error: 'Error in POST request ' + error
+            });
+        });
+});
+
 const port = 3000; // The port on which Node.js will run
 
 app.listen(port, () => {
     console.log(`Node.js server listening on port ${port}`);
 });
 
-//connection.end();
+//mysqlConnection.end();

@@ -1,13 +1,16 @@
 import { Component, OnInit } from '@angular/core';
 import { ModalController, ToastController } from '@ionic/angular';
 import { ModalInfoPage } from '../modal-info/modal-info.page';
-import { ActivatedRoute, Router } from '@angular/router';
+import { ActivatedRoute, } from '@angular/router';
 import { MysqlService } from '../services/mysql.service';
 import { Stall } from '../models/Stall';
 import { Parking } from '../models/Parking';
 import { ModalAddStallPage } from '../modal-add-stall/modal-add-stall.page';
 import { DynamoDbClientService } from '../services/dynamo-db-client.service';
 import { SensorValue } from '../models/SensorValue';
+import { AwsIotService } from '../services/aws-iot.service';
+import { WebSocketService } from '../services/web-socket.service';
+import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-stalls-management',
@@ -21,9 +24,28 @@ export class StallsManagementPage implements OnInit {
   parking: Parking | undefined;
   sensorValuesArray: SensorValue[] = [];
 
-  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService, private dynamoService: DynamoDbClientService, private toastController: ToastController) { }
+  private socketSubscription: Subscription = new Subscription;
 
-  ngOnInit() { }
+  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService,
+    private dynamoService: DynamoDbClientService, private toastController: ToastController, private aws: AwsIotService, private ws: WebSocketService) { }
+
+  ngOnInit() {
+    // Subscribe to the service observable to receive data from the server
+    this.socketSubscription = this.ws.getData().subscribe((data) => {
+      console.log(data);
+      if (data === 'update_status') {
+        this.getStalls(this.MAC);
+        this.getParkingByMac(this.MAC);
+      }
+    });
+  }
+
+  ngOnDestroy() {
+    // Unsubscribe when page is destroyed to avoid memory leaks
+    if (this.socketSubscription) {
+      this.socketSubscription.unsubscribe();
+    }
+  }
 
   ionViewWillEnter() {
     const param = this.route.snapshot.queryParamMap.get('MAC');
@@ -31,6 +53,23 @@ export class StallsManagementPage implements OnInit {
     console.log('MAC value:', this.MAC);
     this.getStalls(this.MAC);
     this.getParkingByMac(this.MAC);
+
+    this.aws.subscribeStatus(this.MAC).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (e) => console.error('Error in subscribeStatus', e)
+    });
+
+    //TEST TEST TEST DA RIMUOVERE TEST TEST TEST
+    setTimeout(() => {
+      this.aws.updateThingShadow('58:BF:25:9F:BC:98', '{"state":{"desired":{"welcome":"updatePOST"}}}').subscribe({
+        next: (response) => {
+          console.log(response);
+        },
+        error: (e) => console.error('Error updateThingShadow:', e)
+      });
+    }, 10000);
   }
 
   openModalInfo(id: number): void {
@@ -86,7 +125,7 @@ export class StallsManagementPage implements OnInit {
               parkingJson.nStalls,
               parkingJson.isOpen === 1 ? true : false,
               parkingJson.img,
-              parkingJson.occupiedStalls
+              parkingJson.availableStalls
             );
           });
         } else {
@@ -135,6 +174,7 @@ export class StallsManagementPage implements OnInit {
       next: (response) => {
         if (response.affectedRows > 0) {
           console.log('stall deleted', response);
+          this.presentToast("Stall deleted successfully");
         } else {
           console.log('No stall found', response);
         }
@@ -160,7 +200,7 @@ export class StallsManagementPage implements OnInit {
             );
           });
           console.log(this.sensorValuesArray);
-        
+
           const averageBrightnessPerHour = SensorValue.calculateAverageBrightnessPerHour(this.sensorValuesArray);
           console.log(averageBrightnessPerHour);
           const brightness = averageBrightnessPerHour.map((sensor) => sensor.averageBrightness);
