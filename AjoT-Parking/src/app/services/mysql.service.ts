@@ -134,4 +134,21 @@ export class MysqlService {
 
     return this.http.post(url, requestBody, httpOptions);
   }
+
+  changeNumberOfStalls(MAC: string, newNStalls: number): Observable<any> {
+    const url = `${this.baseUrl}/api/changeNumberOfStalls`;
+
+    const requestBody = {
+      MAC: MAC,
+      newNStalls: newNStalls
+    };
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http.post(url, requestBody, httpOptions);
+  }
 }

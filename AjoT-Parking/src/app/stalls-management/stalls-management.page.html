@@ -14,7 +14,7 @@
       <ion-col size="12" size-sm="2" style="border-right: 2px solid black;">
         <img alt="immagine parcheggio" src="../../assets/parcheggio1.jpg" style="border:2px solid black;" />
 
-        <ion-row class="ion-justify-content-center" style="margin-top:25px">
+        <ion-row class="ion-justify-content-center ion-text-center" style="margin-top:25px">
           <ion-text style="font-size: 20px;">{{parking?.city}} - {{parking?.address}} - {{parking?.location}}</ion-text>
         </ion-row>
 
@@ -23,8 +23,17 @@
         </ion-row>
 
         <ion-row class="ion-justify-content-center" style="margin-top:25px">
-          <ion-button (click)="changeStatusParking()">{{ parking?.isOpen === true ? 'Close' : 'Open' }}</ion-button>
+          <ion-col>
+            <ion-button expand="block" (click)="changeStatusParking()" [ngClass]="parking?.isOpen === true ? 'close' : 'open'">{{ parking?.isOpen === true ? 'Close the parking' : 'Open the parking' }}</ion-button>
+          </ion-col>
         </ion-row>
+
+        <ion-row class="ion-justify-content-center" style="margin-top:25px">
+          <ion-col>
+            <ion-button expand="block" (click)="openModalChangeNumberOfStalls()">Change number of stalls</ion-button>
+          </ion-col>
+        </ion-row>
+
       </ion-col>
 
       <ion-col size="12" size-sm="10">
@@ -60,10 +69,19 @@
             </ion-row>
           </ng-container>
 
+          <ion-row *ngIf="stallsArray.length === 0" class="ion-justify-content-center">
+
+            <ion-col size="12" size-sm="3" class="ion-text-center">
+              <ion-text style="font-size: 30px;"> No stalls found </ion-text>
+            </ion-col>
+
+          </ion-row>
+
         </ion-grid>
 
       </ion-col>
     </ion-row>
+
 
   </ion-grid>
 

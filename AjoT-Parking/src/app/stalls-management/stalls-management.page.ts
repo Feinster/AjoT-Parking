@@ -11,6 +11,7 @@ import { SensorValue } from '../models/SensorValue';
 import { AwsIotService } from '../services/aws-iot.service';
 import { WebSocketService } from '../services/web-socket.service';
 import { Subscription } from 'rxjs';
+import { ModalChangeNumberStallsPage } from '../modal-change-number-stalls/modal-change-number-stalls.page';
 
 @Component({
   selector: 'app-stalls-management',
@@ -223,5 +224,22 @@ export class StallsManagementPage implements OnInit {
       color: 'warning',
     });
     toast.present();
+  }
+
+  openModalChangeNumberOfStalls(): void {
+    this.presentChangeNumberOfStalls();
+  }
+
+  async presentChangeNumberOfStalls() {
+    const modal = await this.modalCtrl.create({
+      component: ModalChangeNumberStallsPage,
+      componentProps: { 'MAC': this.MAC }
+    });
+
+    modal.onDidDismiss().then((data) => {
+      this.getParkingByMac(this.MAC);
+    });
+
+    await modal.present();
   }
 }

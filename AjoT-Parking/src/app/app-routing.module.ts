@@ -43,6 +43,10 @@ const routes: Routes = [
     path: 'modal-add-stall',
     loadChildren: () => import('./modal-add-stall/modal-add-stall.module').then( m => m.ModalAddStallPageModule)
   },
+  {
+    path: 'modal-change-number-stalls',
+    loadChildren: () => import('./modal-change-number-stalls/modal-change-number-stalls.module').then( m => m.ModalChangeNumberStallsPageModule)
+  },
 ];
 
 @NgModule({

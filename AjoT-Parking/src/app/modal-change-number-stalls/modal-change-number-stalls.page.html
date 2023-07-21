@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Change number of stalls</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="changeNumberOfStallsForm" (ngSubmit)="submitForm()" novalidate>
+    <ion-item lines="full">
+      <ion-input formControlName="newNStalls" type="number" min="0" required label="New number of stalls" labelPlacement="floating" (keypress)="numericOnly($event)"></ion-input>
+    </ion-item>
+    <div *ngIf="changeNumberOfStallsForm.controls?.['newNStalls']?.touched && changeNumberOfStallsForm.controls?.['newNStalls']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['newNStalls'].errors?.['required']">
+        <ion-text color="danger">Number of stalls is required.</ion-text>
+      </div>
+    </div>
+
+    <ion-row>
+      <ion-col>
+        <ion-button type="submit" color="success" expand="block">Insert</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

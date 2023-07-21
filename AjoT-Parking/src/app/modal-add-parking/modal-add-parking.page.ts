@@ -34,12 +34,6 @@ export class ModalAddParkingPage implements OnInit {
     this.modalCtrl.dismiss();
   }
 
-  numericOnly(event: any): boolean {
-    let pattern = /^([0-9])$/;
-    let result = pattern.test(event.key);
-    return result;
-  }
-
   submitForm = () => {
     if (this.addParkingForm.valid) {
       var parking: Parking = new Parking(this.addParkingForm.value.MAC, this.addParkingForm.value.city, this.addParkingForm.value.address,

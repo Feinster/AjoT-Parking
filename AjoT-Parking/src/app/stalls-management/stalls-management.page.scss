@@ -5,3 +5,11 @@ ion-text {
 ion-button {
     font-size: 20px;
 }
+
+.open {
+    --background: var(--ion-color-success);
+}
+
+.close {
+    --background: var(--ion-color-danger);
+}

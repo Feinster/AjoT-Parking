@@ -243,6 +243,25 @@ app.post('/api/changeStatusStall', (req, res) => {
     }
 });
 
+app.post('/api/changeNumberOfStalls', (req, res) => {
+    try {
+        const MAC = req.body.MAC;
+        const newNStalls = req.body.newNStalls;
+
+        const query = `UPDATE parking SET nStalls = ${newNStalls} WHERE MAC = '${MAC}'`;
+
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
+});
+
 app.post('/api/deleteStall', (req, res) => {
     try {
         const MAC = req.body.MAC;
