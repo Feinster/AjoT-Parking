@@ -87,7 +87,6 @@ export class ModalAddParkingPage implements OnInit {
       duration: 2000,
       position: 'top',
       color: 'warning',
-      //cssClass: "toast-custom-class",
     });
     toast.present();
   }

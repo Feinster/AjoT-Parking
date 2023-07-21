@@ -33,13 +33,13 @@ export class ModalAddStallPage implements OnInit {
 
   submitForm = () => {
     if (this.addStallForm.valid) {
-      var stall : Stall = new Stall(this.addStallForm.value.id, this.addStallForm.value.GPIO, this.MAC, true);
+      var stall: Stall = new Stall(this.addStallForm.value.id, this.addStallForm.value.GPIO, this.MAC, true);
       console.log(stall);
       this.stallInsertion(stall);
       return false;
     } else {
       this.validateAllFormFields(this.addStallForm);
-      return console.log('Please provide all the required values!');
+      return this.presentToast('Please provide all the required values!')
     }
   };
 
@@ -55,19 +55,28 @@ export class ModalAddStallPage implements OnInit {
     });
   }
 
-  stallInsertion(stall: Stall) {
-    this.mysqlService.stallInsertion(stall.id, stall.GPIO, stall.MAC_parking, true).subscribe({
-      next: (response) => {
-        if (response.affectedRows > 0) {
-          this.presentToast("Stall inserted successfully");
-          console.log('Stall inserted successfully');
-        } else {
-          this.presentToast("Stall not inserted");
-          console.log('Stall not inserted');
+  async stallInsertion(stall: Stall) {
+    let isStallInsertable = await this.isStallInsertable(stall.MAC_parking);
+    console.log("QUI")
+
+    if (isStallInsertable) {
+      this.mysqlService.stallInsertion(stall.id, stall.GPIO, stall.MAC_parking, true).subscribe({
+        next: (response) => {
+          if (response.affectedRows > 0) {
+            this.presentToast("Stall inserted successfully");
+          } else {
+            this.presentToast("Stall not inserted");
+          }
+        },
+        error: (e) => {
+          console.error('Error inserting parking', e);
+          this.presentToast('Error inserting parking');
         }
-      },
-      error: (e) => console.error('Error inserting parking', e)
-    });
+      });
+    }
+    else{
+      this.presentToast("Mximum number of stalls reached");
+    }
 
     this.close();
   }
@@ -78,9 +87,30 @@ export class ModalAddStallPage implements OnInit {
       duration: 2000,
       position: 'top',
       color: 'warning',
-      //cssClass: "toast-custom-class",
     });
     toast.present();
   }
 
+  async isStallInsertable(MAC: string): Promise<boolean> {
+    try {
+      const response = await this.mysqlService.countNStalls(MAC).toPromise();
+
+      if (response.length > 0) {
+        let maxStalls = response[0].maxStalls;
+        let stalls = response[0].stalls;
+        console.log(maxStalls, stalls);
+        if (stalls + 1 > maxStalls) {
+          return false;
+        } else {
+          return true
+        }
+      } else {
+        console.log('No stalls found');
+        return false;
+      }
+    } catch (e) {
+      console.error('Errore searching stalls', e);
+      return false;
+    }
+  }
 }

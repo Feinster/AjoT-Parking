@@ -187,6 +187,23 @@ app.post('/api/stallInsertion', (req, res) => {
     }
 });
 
+app.get('/api/countNStalls', (req, res) => {
+    try {
+        const MAC = req.query.MAC;
+        const query = `SELECT p.nStalls as maxStalls, COUNT(s.id) as stalls FROM parking AS p LEFT JOIN stalls AS s ON p.MAC = s.MAC_PARKING WHERE MAC = '${MAC}' GROUP BY p.MAC;`;
+
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
+});
+
 app.post('/api/changeStatusParking', (req, res) => {
     try {
         const MAC = req.body.MAC;

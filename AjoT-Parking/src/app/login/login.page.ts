@@ -3,6 +3,7 @@ import { Router } from '@angular/router';
 import { MysqlService } from '../services/mysql.service';
 import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms';
 import { UserService } from '../services/user.service';
+import { ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-login',
@@ -13,7 +14,7 @@ export class LoginPage implements OnInit {
 
   loginForm: FormGroup;
 
-  constructor(private router: Router, private mysqlService: MysqlService, public formBuilder: FormBuilder, private userService: UserService) {
+  constructor(private router: Router, private mysqlService: MysqlService, public formBuilder: FormBuilder, private userService: UserService, private toastController: ToastController) {
     this.loginForm = this.formBuilder.group({
       email: ['', [Validators.required,],],
       password: ['', [Validators.required]],
@@ -34,14 +35,16 @@ export class LoginPage implements OnInit {
     this.mysqlService.getUsersByEmailAndPassword(email, password).subscribe({
       next: (response) => {
         if (response.length > 0) {
-          console.log('Valid user credentials');
           this.userService.login(email, response[0].isAdmin === 1 ? true : false);
           this.router.navigate(['/parking']);
         } else {
-          console.log('Invalid user credentials');
+          this.presentToast("Invalid user credentials");
         }
       },
-      error: (e) => console.error('Error verifying user credentials:', e)
+      error: (e) => {
+        console.error("Error verifying user credentials", e);
+        this.presentToast("Error verifying user credentials");
+      }
     });
   }
 
@@ -63,6 +66,16 @@ export class LoginPage implements OnInit {
         this.validateAllFormFields(control);
       }
     });
+  }
+
+  async presentToast(msg: string) {
+    const toast = await this.toastController.create({
+      message: msg,
+      duration: 2000,
+      position: 'top',
+      color: 'warning',
+    });
+    toast.present();
   }
 }
 

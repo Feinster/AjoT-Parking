@@ -96,6 +96,11 @@ export class MysqlService {
     return this.http.post(url, requestBody, httpOptions);
   }
 
+  countNStalls(MAC: string): Observable<any> {
+    const url = `${this.baseUrl}/api/countNStalls?MAC=${MAC}`;
+    return this.http.get(url);
+  }
+
   changeStatusParking(MAC: string, newStatus: boolean): Observable<any> {
     const url = `${this.baseUrl}/api/changeStatusParking`;
 
