@@ -7,5 +7,6 @@ import { WebSocketService } from './services/web-socket.service';
   styleUrls: ['app.component.scss'],
 })
 export class AppComponent {
-  constructor(private webSocketService: WebSocketService) {}
-  }
+  //AppComponent is the first component that is loaded, instantiating here the websocket is immediately opened
+  constructor(private webSocketService: WebSocketService) { }
+}

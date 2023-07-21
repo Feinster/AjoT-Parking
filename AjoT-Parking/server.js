@@ -1,15 +1,22 @@
+// Import the 'express' library, which is a web application framework for Node.js
 const express = require('express');
+// Import the 'mysql' library to interact with MySQL databases
+var mysql = require('mysql');
+// Import the 'cors' library, which provides Cross-Origin Resource Sharing support
+const cors = require('cors');
+
+//Import functions from other local files
 const {
     getSensorValues,
     getSensorValuesByIdAndMacAndTime
 } = require('./dynamo');
-var mysql = require('mysql');
-const cors = require('cors');
 const {
     getThingShadow,
     updateThingShadow,
     subscribeStatus
 } = require('./awsIotUtils');
+
+// Load environment variables from a .env file
 require('dotenv').config();
 
 // Create an Express application
@@ -19,6 +26,7 @@ app.use(cors());
 // Enable middleware to parse incoming requests with JSON payloads
 app.use(express.json());
 
+// Create a MySQL database connection configuration object using environment variables
 var mysqlConnection = mysql.createConnection({
     host: process.env.RDS_HOSTNAME,
     user: process.env.RDS_USERNAME,
@@ -27,6 +35,7 @@ var mysqlConnection = mysql.createConnection({
     database: process.env.RDS_DATABASE
 });
 
+// Attempt to establish a connection to the MySQL database using the provided configuration
 mysqlConnection.connect(function(err) {
     if (err) {
         console.error('Database connection failed: ' + err.stack);
@@ -359,6 +368,7 @@ app.post('/api/updateThingShadow', (req, res) => {
 
 const port = 3000; // The port on which Node.js will run
 
+// Start the Node.js server and make it listen on a specified port
 app.listen(port, () => {
     console.log(`Node.js server listening on port ${port}`);
 });
