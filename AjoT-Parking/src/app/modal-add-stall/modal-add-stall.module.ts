@@ -9,6 +9,7 @@ import { ModalAddStallPageRoutingModule } from './modal-add-stall-routing.module
 import { ModalAddStallPage } from './modal-add-stall.page';
 import { HttpClientModule } from '@angular/common/http';
 import { MysqlService } from '../services/mysql.service';
+import { AwsIotService } from '../services/aws-iot.service';
 
 @NgModule({
   imports: [
@@ -21,6 +22,6 @@ import { MysqlService } from '../services/mysql.service';
   ],
   declarations: [ModalAddStallPage],
   providers: [
-    MysqlService]
+    MysqlService, AwsIotService ]
 })
 export class ModalAddStallPageModule {}

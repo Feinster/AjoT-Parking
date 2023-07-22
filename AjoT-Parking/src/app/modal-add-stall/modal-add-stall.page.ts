@@ -3,6 +3,7 @@ import { FormBuilder, FormControl, FormGroup, Validators } from '@angular/forms'
 import { MysqlService } from '../services/mysql.service';
 import { ModalController, ToastController } from '@ionic/angular';
 import { Stall } from '../models/Stall';
+import { AwsIotService } from '../services/aws-iot.service';
 
 @Component({
   selector: 'app-modal-add-stall',
@@ -14,7 +15,8 @@ export class ModalAddStallPage implements OnInit {
   addStallForm: FormGroup;
   @Input() MAC: string = "";
 
-  constructor(public formBuilder: FormBuilder, private modalCtrl: ModalController, private mysqlService: MysqlService, private toastController: ToastController) {
+  constructor(public formBuilder: FormBuilder, private modalCtrl: ModalController, private mysqlService: MysqlService,
+    private toastController: ToastController, private aws: AwsIotService) {
     this.addStallForm = this.formBuilder.group({
       GPIO: ['', [Validators.required]],
       id: ['', [Validators.required]],
@@ -64,6 +66,7 @@ export class ModalAddStallPage implements OnInit {
         next: (response) => {
           if (response.affectedRows > 0) {
             this.presentToast("Stall inserted successfully");
+            this.updateThingShadow(stall);
           } else {
             this.presentToast("Stall not inserted");
           }
@@ -74,7 +77,7 @@ export class ModalAddStallPage implements OnInit {
         }
       });
     }
-    else{
+    else {
       this.presentToast("Mximum number of stalls reached");
     }
 
@@ -112,5 +115,14 @@ export class ModalAddStallPage implements OnInit {
       console.error('Errore searching stalls', e);
       return false;
     }
+  }
+
+  updateThingShadow(stall: Stall): void {
+    this.aws.updateThingShadow('58:BF:25:9F:BC:98', '{"state": {"desired": {"stalls_ids": [' + stall.id + '],"stalls_pinIds": [' + stall.GPIO + '],"numStalls": 1} }}').subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (e) => console.error('Error updateThingShadow:', e)
+    });
   }
 }

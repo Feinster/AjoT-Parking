@@ -61,7 +61,8 @@ export class StallsManagementPage implements OnInit {
       },
       error: (e) => console.error('Error in subscribeStatus', e)
     });
-
+    
+    /*TEST TEST TEST DA RIMUOVERE TEST TEST TEST
     this.aws.getThingShadow('58:BF:25:9F:BC:98').subscribe({
       next: (response) => {
         console.log(response);
@@ -69,7 +70,6 @@ export class StallsManagementPage implements OnInit {
       error: (e) => console.error('Error verifying user credentials:', e)
     });
 
-    /*TEST TEST TEST DA RIMUOVERE TEST TEST TEST
     setTimeout(() => {
       this.aws.updateThingShadow('58:BF:25:9F:BC:98', '{"state":{"desired":{"welcome":"updatePOST"}}}').subscribe({
         next: (response) => {
