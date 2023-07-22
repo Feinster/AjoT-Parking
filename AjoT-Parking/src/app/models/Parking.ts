@@ -18,4 +18,18 @@ export class Parking {
         this.img = img;
         this.availableStalls = availableStalls;
     }
+
+    // Define a custom equals method to compare Parking objects
+    equals(other: Parking): boolean {
+        return (
+            this.MAC === other.MAC &&
+            this.city === other.city &&
+            this.address === other.address &&
+            this.location === other.location &&
+            this.nStalls === other.nStalls &&
+            this.isOpen === other.isOpen &&
+            this.img === other.img &&
+            this.availableStalls === other.availableStalls
+        );
+    }
 }

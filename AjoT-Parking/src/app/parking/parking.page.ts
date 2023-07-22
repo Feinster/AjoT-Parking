@@ -51,7 +51,6 @@ export class ParkingPage implements OnInit {
   }
 
   getParking(): void {
-    this.parkingArray = [];
     this.mysqlService.getParking().subscribe({
       next: (response) => {
         if (response.length > 0) {
@@ -67,7 +66,9 @@ export class ParkingPage implements OnInit {
               parkingJson.img,
               parkingJson.availableStalls
             );
-            this.parkingArray.push(parking);
+            if (!this.parkingArray.some((item) => item.equals(parking))) {
+              this.parkingArray.push(parking);
+            }
           });
         } else {
           console.log('No parking found');

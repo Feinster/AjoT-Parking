@@ -62,7 +62,14 @@ export class StallsManagementPage implements OnInit {
       error: (e) => console.error('Error in subscribeStatus', e)
     });
 
-    //TEST TEST TEST DA RIMUOVERE TEST TEST TEST
+    this.aws.getThingShadow('58:BF:25:9F:BC:98').subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (e) => console.error('Error verifying user credentials:', e)
+    });
+
+    /*TEST TEST TEST DA RIMUOVERE TEST TEST TEST
     setTimeout(() => {
       this.aws.updateThingShadow('58:BF:25:9F:BC:98', '{"state":{"desired":{"welcome":"updatePOST"}}}').subscribe({
         next: (response) => {
@@ -71,6 +78,7 @@ export class StallsManagementPage implements OnInit {
         error: (e) => console.error('Error updateThingShadow:', e)
       });
     }, 10000);
+    */
   }
 
   openModalInfo(id: number): void {
@@ -90,7 +98,6 @@ export class StallsManagementPage implements OnInit {
   }
 
   getStalls(MAC: string): void {
-    this.stallsArray = [];
     this.mysqlService.getStallsByParkingMAC(MAC).subscribe({
       next: (response) => {
         if (response.length > 0) {
@@ -102,7 +109,9 @@ export class StallsManagementPage implements OnInit {
               stallJson.MAC_parking,
               stallJson.isFree === 1 ? true : false
             );
-            this.stallsArray.push(stall);
+            if (!this.stallsArray.some((item) => item.equals(stall))) {
+              this.stallsArray.push(stall);
+            }
           });
         } else {
           console.log('No stalls found');
@@ -176,6 +185,7 @@ export class StallsManagementPage implements OnInit {
         if (response.affectedRows > 0) {
           console.log('stall deleted', response);
           this.presentToast("Stall deleted successfully");
+          this.removeStallById(id);
         } else {
           console.log('No stall found', response);
         }
@@ -241,5 +251,12 @@ export class StallsManagementPage implements OnInit {
     });
 
     await modal.present();
+  }
+
+  removeStallById(id: number): void {
+    const index = this.stallsArray.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      this.stallsArray.splice(index, 1);
+    }
   }
 }
