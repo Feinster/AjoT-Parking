@@ -14,6 +14,9 @@ export class ModalAddStallPage implements OnInit {
 
   addStallForm: FormGroup;
   @Input() MAC: string = "";
+  numStalls: number = 0;
+  stalls_ids: number[] = [];
+  stalls_pinIds: number[] = [];
 
   constructor(public formBuilder: FormBuilder, private modalCtrl: ModalController, private mysqlService: MysqlService,
     private toastController: ToastController, private aws: AwsIotService) {
@@ -23,7 +26,9 @@ export class ModalAddStallPage implements OnInit {
     });
   }
 
-  ngOnInit() { }
+  ngOnInit() {
+    this.getThingShadow();
+  }
 
   get errorControl() {
     return this.addStallForm.controls;
@@ -118,11 +123,29 @@ export class ModalAddStallPage implements OnInit {
   }
 
   updateThingShadow(stall: Stall): void {
-    this.aws.updateThingShadow('58:BF:25:9F:BC:98', '{"state": {"desired": {"stalls_ids": [' + stall.id + '],"stalls_pinIds": [' + stall.GPIO + '],"numStalls": 1} }}').subscribe({
+    this.numStalls = this.numStalls + 1;
+    this.stalls_ids.push(stall.id);
+    this.stalls_pinIds.push(stall.GPIO);
+    const stallIdsString = this.stalls_ids.join(',');
+    const stallGpioString = this.stalls_pinIds.join(',');
+    console.log('{"state": {"desired": {"stalls_ids": [' + stallIdsString + '],"stalls_pinIds": [' + stallGpioString + '],"numStalls": ' + this.numStalls + '} }}')
+    this.aws.updateThingShadow(this.MAC, '{"state": {"desired": {"stalls_ids": [' + stallIdsString + '],"stalls_pinIds": [' + stallGpioString + '],"numStalls": ' + this.numStalls + '} }}').subscribe({
       next: (response) => {
         console.log(response);
       },
       error: (e) => console.error('Error updateThingShadow:', e)
+    });
+  }
+
+  getThingShadow(): void {
+    this.aws.getThingShadow('58:BF:25:9F:BC:98').subscribe({
+      next: (response) => {
+        const jsonResponse = JSON.parse(response);
+        this.numStalls = jsonResponse.state.reported.numStalls;
+        this.stalls_ids = jsonResponse.state.reported.stalls_ids;
+        this.stalls_pinIds = jsonResponse.state.reported.stalls_pinIds;
+      },
+      error: (e) => console.error('Error verifying user credentials:', e)
     });
   }
 }

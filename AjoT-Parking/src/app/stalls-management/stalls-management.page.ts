@@ -12,6 +12,7 @@ import { AwsIotService } from '../services/aws-iot.service';
 import { WebSocketService } from '../services/web-socket.service';
 import { Subscription } from 'rxjs';
 import { ModalChangeNumberStallsPage } from '../modal-change-number-stalls/modal-change-number-stalls.page';
+import { ModalChangeBrightnessThresholdPage } from '../modal-change-brightness-threshold/modal-change-brightness-threshold.page';
 
 @Component({
   selector: 'app-stalls-management',
@@ -61,24 +62,6 @@ export class StallsManagementPage implements OnInit {
       },
       error: (e) => console.error('Error in subscribeStatus', e)
     });
-    
-    /*TEST TEST TEST DA RIMUOVERE TEST TEST TEST
-    this.aws.getThingShadow('58:BF:25:9F:BC:98').subscribe({
-      next: (response) => {
-        console.log(response);
-      },
-      error: (e) => console.error('Error verifying user credentials:', e)
-    });
-
-    setTimeout(() => {
-      this.aws.updateThingShadow('58:BF:25:9F:BC:98', '{"state":{"desired":{"welcome":"updatePOST"}}}').subscribe({
-        next: (response) => {
-          console.log(response);
-        },
-        error: (e) => console.error('Error updateThingShadow:', e)
-      });
-    }, 10000);
-    */
   }
 
   openModalInfo(id: number): void {
@@ -109,8 +92,13 @@ export class StallsManagementPage implements OnInit {
               stallJson.MAC_parking,
               stallJson.isFree === 1 ? true : false
             );
-            if (!this.stallsArray.some((item) => item.equals(stall))) {
+            // Find the index of the item in the array using a custom method for comparing stall objects
+            const index = this.stallsArray.findIndex((item) => item.equals(stall));
+            if (index === -1) {
               this.stallsArray.push(stall);
+            } else {
+              // If the element is present, update the stall.isFree field
+              this.stallsArray[index].isFree = stall.isFree;
             }
           });
         } else {
@@ -135,7 +123,8 @@ export class StallsManagementPage implements OnInit {
               parkingJson.nStalls,
               parkingJson.isOpen === 1 ? true : false,
               parkingJson.img,
-              parkingJson.availableStalls
+              parkingJson.availableStalls,
+              parkingJson.brightnessThreshold
             );
           });
         } else {
@@ -169,32 +158,32 @@ export class StallsManagementPage implements OnInit {
       next: (response) => {
         if (response.affectedRows > 0) {
           console.log('Parking changed', response);
+          this.updateThingShadow('{"state":{"desired": {"parkingLot_open": ' + !this.parking?.isOpen + '}}}');
+          this.getParkingByMac(this.MAC);
         } else {
           console.log('No change or parking not found', response);
         }
       },
       error: (e) => console.error('Errore changing parking', e)
     });
-
-    this.getParkingByMac(this.MAC);
   }
 
-  deleteStall(id: number) {
+  deleteStall(id: number, pin: number) {
     this.mysqlService.deleteStall(this.MAC, id).subscribe({
       next: (response) => {
         if (response.affectedRows > 0) {
           console.log('stall deleted', response);
           this.presentToast("Stall deleted successfully");
           this.removeStallById(id);
+          this.updateThingShadow('{"state":{"desired":{"numStalls":' + this.stallsArray.length + ', "stalls_ids": [' + id + '],"stalls_pinIds": [' + pin + ']}}}');
+          this.getStalls(this.MAC);
+          this.getParkingByMac(this.MAC);
         } else {
           console.log('No stall found', response);
         }
       },
       error: (e) => console.error('Errore deleting stall', e)
     });
-
-    this.getStalls(this.MAC);
-    this.getParkingByMac(this.MAC);
   }
 
   getSensorValuesByIdAndMacAndTime(id: number, time: number): void {
@@ -258,5 +247,31 @@ export class StallsManagementPage implements OnInit {
     if (index !== -1) {
       this.stallsArray.splice(index, 1);
     }
+  }
+
+  updateThingShadow(body: string): void {
+    this.aws.updateThingShadow(this.MAC, body).subscribe({
+      next: (response) => {
+        console.log(response);
+      },
+      error: (e) => console.error('Error updateThingShadow:', e)
+    });
+  }
+
+  openModalChangeBrightnessThreshold(): void {
+    this.presentChangeBrightnessThreshold();
+  }
+
+  async presentChangeBrightnessThreshold() {
+    const modal = await this.modalCtrl.create({
+      component: ModalChangeBrightnessThresholdPage,
+      componentProps: { 'MAC': this.MAC }
+    });
+
+    modal.onDidDismiss().then((data) => {
+      this.getParkingByMac(this.MAC);
+    });
+
+    await modal.present();
   }
 }

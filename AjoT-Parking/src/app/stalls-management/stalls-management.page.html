@@ -23,6 +23,10 @@
         </ion-row>
 
         <ion-row class="ion-justify-content-center" style="margin-top:25px">
+          <ion-text style="font-size: 20px;">Brightness threshold: {{parking?.brightnessThreshold}}</ion-text>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-center" style="margin-top:25px">
           <ion-col>
             <ion-button expand="block" (click)="changeStatusParking()" [ngClass]="parking?.isOpen === true ? 'close' : 'open'">{{ parking?.isOpen === true ? 'Close the parking' : 'Open the parking' }}</ion-button>
           </ion-col>
@@ -31,6 +35,12 @@
         <ion-row class="ion-justify-content-center" style="margin-top:25px">
           <ion-col>
             <ion-button expand="block" (click)="openModalChangeNumberOfStalls()">Change number of stalls</ion-button>
+          </ion-col>
+        </ion-row>
+
+        <ion-row class="ion-justify-content-center" style="margin-top:25px">
+          <ion-col>
+            <ion-button class="ion-text-wrap" expand="block" (click)="openModalChangeBrightnessThreshold()">Change brightness threshold</ion-button>
           </ion-col>
         </ion-row>
 
@@ -56,7 +66,7 @@
                 <ion-text>{{ stall.isFree === true ? 'Free' : 'Busy' }}</ion-text>
               </ion-col>
               <ion-col size="12" size-sm="1.5" class="ion-text-right">
-                <ion-button (click)="deleteStall(stall.id)" color="danger">
+                <ion-button (click)="deleteStall(stall.id, stall.GPIO)" color="danger">
                   <ion-icon name="close-outline" slot="start"></ion-icon>
                   Delete</ion-button>
               </ion-col>

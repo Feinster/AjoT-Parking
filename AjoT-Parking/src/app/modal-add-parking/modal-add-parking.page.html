@@ -54,6 +54,18 @@
       </div>
     </div>
 
+    <ion-item lines="full">
+      <ion-input formControlName="brightnessThreshold" type="number" required label="Brightness Threshold" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="addParkingForm.controls?.['brightnessThreshold']?.touched && addParkingForm.controls?.['brightnessThreshold']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['brightnessThreshold'].errors?.['required']">
+        <ion-text color="danger">Brightness Threshold is required.</ion-text>
+      </div>
+      <div class="ion-padding" *ngIf="errorControl['brightnessThreshold'].errors?.['pattern']">
+        <ion-text color="danger">Please provide a value between 0 and 4095.</ion-text>
+      </div>
+    </div>
+
     <ion-radio-group formControlName="isOpen">
       <ion-list-header>
         <ion-label>Status</ion-label>

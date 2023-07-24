@@ -21,6 +21,12 @@ export class ModalAddParkingPage implements OnInit {
       location: ['', [Validators.required]],
       imageName: ['', [Validators.required]],
       isOpen: ['', [Validators.required]],
+      brightnessThreshold: [
+        '',
+        [
+          Validators.required,
+          Validators.pattern('^(0|[1-9]|[1-9]\\d{1,2}|[1-3]\\d{3}|40([0-8]\\d|9[0-5]))$')]
+      ],
     });
   }
 
@@ -37,7 +43,7 @@ export class ModalAddParkingPage implements OnInit {
   submitForm = () => {
     if (this.addParkingForm.valid) {
       var parking: Parking = new Parking(this.addParkingForm.value.MAC, this.addParkingForm.value.city, this.addParkingForm.value.address,
-        this.addParkingForm.value.location, 0, this.addParkingForm.value.isOpen, this.addParkingForm.value.imageName, 0);
+        this.addParkingForm.value.location, 0, this.addParkingForm.value.isOpen, this.addParkingForm.value.imageName, 0, this.addParkingForm.value.brightnessThreshold);
       this.parkingInsertion(parking);
       return false;
     } else {
@@ -59,7 +65,7 @@ export class ModalAddParkingPage implements OnInit {
   }
 
   parkingInsertion(parking: Parking) {
-    this.mysqlService.parkingInsertion(parking.MAC, parking.city, parking.address, parking.location, parking.nStalls, parking.isOpen, parking.img).subscribe({
+    this.mysqlService.parkingInsertion(parking.MAC, parking.city, parking.address, parking.location, parking.nStalls, parking.isOpen, parking.img, parking.brightnessThreshold).subscribe({
       next: (response) => {
         if (response.affectedRows > 0) {
           this.presentToast("Parking inserted successfully");

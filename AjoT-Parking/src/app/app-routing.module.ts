@@ -47,6 +47,10 @@ const routes: Routes = [
     path: 'modal-change-number-stalls',
     loadChildren: () => import('./modal-change-number-stalls/modal-change-number-stalls.module').then( m => m.ModalChangeNumberStallsPageModule)
   },
+  {
+    path: 'modal-change-brightness-threshold',
+    loadChildren: () => import('./modal-change-brightness-threshold/modal-change-brightness-threshold.module').then( m => m.ModalChangeBrightnessThresholdPageModule)
+  },
 ];
 
 @NgModule({

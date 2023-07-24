@@ -126,8 +126,9 @@ app.post('/api/parkingInsertion', (req, res) => {
         const nStalls = req.body.nStalls;
         const isOpen = req.body.isOpen;
         const img = req.body.img;
+        const brightnessThreshold = req.body.brightnessThreshold;
 
-        const query = `INSERT INTO parking (MAC, city, address, location, nStalls, isOpen, img) VALUES ('${MAC}', '${city}', '${address}', '${location}', '${nStalls}', '${isOpen}', '${img}')`;
+        const query = `INSERT INTO parking (MAC, city, address, location, nStalls, isOpen, img, brightnessThreshold) VALUES ('${MAC}', '${city}', '${address}', '${location}', '${nStalls}', '${isOpen}', '${img}', '${brightnessThreshold}')`;
 
         mysqlConnection.query(query, (error, results) => {
             if (error) throw error;
@@ -235,15 +236,21 @@ app.post('/api/changeStatusParking', (req, res) => {
 app.post('/api/changeStatusStall', (req, res) => {
     try {
         const MAC = req.body.MAC;
-        const newStatus = req.body.newStatus;
-        const id = req.body.id;
+        const stalls_ids = req.body.stalls_ids;
+        const stalls_free = req.body.stalls_free;
 
-        const query = `UPDATE stalls SET isFree = ${newStatus} WHERE MAC_PARKING = '${MAC}' AND id = '${id}'`;
+        let caseClause = '';
+        stalls_ids.forEach((id, index) => {
+            caseClause += ` WHEN ${id} THEN ${stalls_free[index]}`;
+        });
+
+        const query = `UPDATE stalls SET isFree = CASE id ${caseClause} ELSE isFree END WHERE MAC_PARKING = '${MAC}' AND id IN (${stalls_ids.join(',')});`;
 
         mysqlConnection.query(query, (error, results) => {
             if (error) throw error;
             res.json(results);
         });
+
     } catch (error) {
         console.error(error);
         res.status(500).json({
@@ -258,6 +265,25 @@ app.post('/api/changeNumberOfStalls', (req, res) => {
         const newNStalls = req.body.newNStalls;
 
         const query = `UPDATE parking SET nStalls = ${newNStalls} WHERE MAC = '${MAC}'`;
+
+        mysqlConnection.query(query, (error, results) => {
+            if (error) throw error;
+            res.json(results);
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
+});
+
+app.post('/api/changeBrightnessThreshold', (req, res) => {
+    try {
+        const MAC = req.body.MAC;
+        const newBrightnessThreshold = req.body.newBrightnessThreshold;
+
+        const query = `UPDATE parking SET brightnessThreshold = ${newBrightnessThreshold} WHERE MAC = '${MAC}'`;
 
         mysqlConnection.query(query, (error, results) => {
             if (error) throw error;
@@ -322,7 +348,7 @@ app.get('/api/getThingShadow', (req, res) => {
 
     getThingShadow(MAC)
         .then((data) => {
-            return res.json(data);
+            return res.json(data.payload);
         })
         .catch((error) => {
             return res.status(500).json({

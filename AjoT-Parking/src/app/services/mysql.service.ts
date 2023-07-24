@@ -45,7 +45,7 @@ export class MysqlService {
     return this.http.post(url, requestBody, httpOptions);
   }
 
-  parkingInsertion(MAC: string, city: string, address: string, location: string, nStalls: number, isOpen: boolean, img: string): Observable<any> {
+  parkingInsertion(MAC: string, city: string, address: string, location: string, nStalls: number, isOpen: boolean, img: string, brightnessThreshold: number): Observable<any> {
     const url = `${this.baseUrl}/api/parkingInsertion`;
 
     const requestBody = {
@@ -55,7 +55,8 @@ export class MysqlService {
       location: location,
       nStalls: nStalls,
       isOpen: isOpen,
-      img: img
+      img: img,
+      brightnessThreshold: brightnessThreshold
     };
 
     const httpOptions = {
@@ -141,6 +142,23 @@ export class MysqlService {
     const requestBody = {
       MAC: MAC,
       newNStalls: newNStalls
+    };
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http.post(url, requestBody, httpOptions);
+  }
+
+  changeBrightnessThreshold(MAC: string, newBrightnessThreshold: number): Observable<any> {
+    const url = `${this.baseUrl}/api/changeBrightnessThreshold`;
+
+    const requestBody = {
+      MAC: MAC,
+      newBrightnessThreshold: newBrightnessThreshold
     };
 
     const httpOptions = {

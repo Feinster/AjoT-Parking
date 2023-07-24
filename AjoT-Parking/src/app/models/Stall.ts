@@ -16,8 +16,6 @@ export class Stall {
         return (
             this.id === other.id &&
             this.GPIO === other.GPIO &&
-            this.MAC_parking === other.MAC_parking &&
-            this.isFree === other.isFree
-        );
+            this.MAC_parking === other.MAC_parking);
     }
 }

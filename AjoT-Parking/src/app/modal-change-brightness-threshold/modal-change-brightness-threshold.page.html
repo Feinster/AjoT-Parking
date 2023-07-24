@@ -1,0 +1,30 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Change Brightness Threshold</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="changeBrightnessThresholdForm" (ngSubmit)="submitForm()" novalidate>
+    <ion-item lines="full">
+      <ion-input formControlName="newBrightnessThreshold" type="number" required label="Brightness Threshold" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="changeBrightnessThresholdForm.controls?.['newBrightnessThreshold']?.touched && changeBrightnessThresholdForm.controls?.['newBrightnessThreshold']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['newBrightnessThreshold'].errors?.['required']">
+        <ion-text color="danger">Brightness Threshold is required.</ion-text>
+      </div>
+      <div class="ion-padding" *ngIf="errorControl['newBrightnessThreshold'].errors?.['pattern']">
+        <ion-text color="danger">Please provide a value between 0 and 4095.</ion-text>
+      </div>
+    </div>
+
+    <ion-row>
+      <ion-col>
+        <ion-button type="submit" color="success" expand="block">Insert</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

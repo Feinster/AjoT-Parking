@@ -24,13 +24,7 @@ const getThingShadow = async(MAC) => {
     var params = {
         thingName: MAC,
     };
-    iotdata.getThingShadow(params, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-        } else {
-            console.log(data);
-        }
-    });
+    return iotdata.getThingShadow(params).promise();
 }
 
 const updateThingShadow = async(MAC, body) => {
@@ -38,13 +32,7 @@ const updateThingShadow = async(MAC, body) => {
         payload: body,
         thingName: MAC,
     };
-    iotdata.updateThingShadow(params, function(err, data) {
-        if (err) {
-            console.log(err, err.stack);
-        } else {
-            console.log(data);
-        }
-    });
+    return iotdata.updateThingShadow(params).promise();
 }
 
 const subscribeStatus = async(MAC) => {
@@ -67,8 +55,9 @@ const subscribeStatus = async(MAC) => {
                     const thingShadows = awsIot.thingShadow({
                         region: AWS.config.region,
                         host: process.env.HOST,
-                        clientId: thingName,
-                        // Connect via secure WebSocket
+                        // Use a random id to allow multiple connections
+                        clientId: thingName + '-' + (Math.floor((Math.random() * 100000) + 1)),
+                        // Connect via swecure WebSocket
                         protocol: 'wss',
                         // Set the maximum reconnect time to 8 seconds; this is a browser application
                         // so we don't want to leave the user waiting too long for re-connection after
@@ -96,22 +85,26 @@ const subscribeStatus = async(MAC) => {
                                 }
                             }
                         } else { // statusType === 'accepted'
-                            var newStatus = 0;
-                            var id = 2;
-                            changeStatusStallOnDB(MAC, newStatus, id);
+                            //var newStatus = 0;
+                            //var id = 2;
+                            //changeStatusStallOnDB(MAC, newStatus, id);
                         }
                     });
 
                     // Update whenever we receive foreignStateChange events from the shadow.
-                    // This is triggered when the truck Thing updates its state.
                     thingShadows.on('foreignStateChange', function(thingName, operation, stateObject) {
-                        console.log(stateObject.state.desired.welcome);
-                        console.log('foreignStateChange event received', stateObject)
-
+                        console.log('foreignStateChange', operation)
+                        console.log('foreignStateChange event received', JSON.stringify(stateObject));
                         if (operation === "update") {
-                            var newStatus = 0;
-                            var id = 2;
-                            changeStatusStallOnDB(MAC, newStatus, id);
+
+                            if (stateObject.state.hasOwnProperty('reported') && stateObject.state.reported.hasOwnProperty('stalls_free')) {
+                                console.log("foreignStateChange newStallStatus", stateObject.state.reported.stalls_free);
+                                stalls_ids = stateObject.state.reported.stalls_ids;
+                                stalls_free = stateObject.state.reported.stalls_free;
+                                changeStatusStallOnDB(MAC, stalls_ids, stalls_free);
+                            } else {
+                                console.log('no reported lights state');
+                            }
                         }
                     });
 
@@ -139,6 +132,9 @@ const subscribeStatus = async(MAC) => {
                         }
                     });
 
+                    thingShadows.on('close', function() {
+                        console.log('connection closed');
+                    });
 
                 } else {
                     console.log('Error retrieving credentials: ' + err);
@@ -189,13 +185,13 @@ function broadcastMessage(message) {
     });
 }
 
-function changeStatusStallOnDB(MAC, newStatus, id) {
+function changeStatusStallOnDB(MAC, stalls_ids, stalls_free) {
     const url = 'http://localhost:3000/api/changeStatusStall';
 
     const requestBody = {
         MAC: MAC,
-        newStatus: newStatus,
-        id: id
+        stalls_ids: stalls_ids,
+        stalls_free: stalls_free
     };
 
     const fetchOptions = {
