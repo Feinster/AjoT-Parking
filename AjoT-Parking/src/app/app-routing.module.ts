@@ -51,6 +51,10 @@ const routes: Routes = [
     path: 'modal-change-brightness-threshold',
     loadChildren: () => import('./modal-change-brightness-threshold/modal-change-brightness-threshold.module').then( m => m.ModalChangeBrightnessThresholdPageModule)
   },
+  {
+    path: 'modal-choose-data',
+    loadChildren: () => import('./modal-choose-data/modal-choose-data.module').then( m => m.ModalChooseDataPageModule)
+  },
 ];
 
 @NgModule({

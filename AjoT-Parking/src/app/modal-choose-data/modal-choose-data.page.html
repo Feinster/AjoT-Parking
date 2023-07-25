@@ -1,0 +1,27 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Choose data</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="close()">Close</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true">
+  <form [formGroup]="chooseDateForm" (ngSubmit)="submitForm()" novalidate>
+    <ion-item lines="full">
+      <ion-input formControlName="date" type="date" required label="date" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="chooseDateForm.controls?.['date']?.touched && chooseDateForm.controls?.['date']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['date'].errors?.['required']">
+        <ion-text color="danger">date is required.</ion-text>
+      </div>
+    </div>
+
+    <ion-row>
+      <ion-col>
+        <ion-button type="submit" color="success" expand="block">Insert</ion-button>
+      </ion-col>
+    </ion-row>
+  </form>
+</ion-content>

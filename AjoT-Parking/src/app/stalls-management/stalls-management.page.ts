@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ModalController, ToastController } from '@ionic/angular';
+import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { ModalInfoPage } from '../modal-info/modal-info.page';
 import { ActivatedRoute, } from '@angular/router';
 import { MysqlService } from '../services/mysql.service';
@@ -13,6 +13,7 @@ import { WebSocketService } from '../services/web-socket.service';
 import { Subscription } from 'rxjs';
 import { ModalChangeNumberStallsPage } from '../modal-change-number-stalls/modal-change-number-stalls.page';
 import { ModalChangeBrightnessThresholdPage } from '../modal-change-brightness-threshold/modal-change-brightness-threshold.page';
+import { ModalChooseDataPage } from '../modal-choose-data/modal-choose-data.page';
 
 @Component({
   selector: 'app-stalls-management',
@@ -28,7 +29,7 @@ export class StallsManagementPage implements OnInit {
 
   private socketSubscription: Subscription = new Subscription;
 
-  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService,
+  constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService, private loadingController: LoadingController,
     private dynamoService: DynamoDbClientService, private toastController: ToastController, private aws: AwsIotService, private ws: WebSocketService) { }
 
   ngOnInit() {
@@ -64,18 +65,26 @@ export class StallsManagementPage implements OnInit {
     });
   }
 
-  openModalInfo(id: number): void {
+  openModalTodaysInfo(id: number): void {
     const currentDate = new Date();
     currentDate.setHours(0, 0, 0, 0);
-    const time = currentDate.getTime() * 1000;
-    this.getSensorValuesByIdAndMacAndTime(id, time);
+    const startTime = currentDate.getTime() * 1000;
+
+    currentDate.setHours(23, 59, 59, 999);
+    const endTime = currentDate.getTime() * 1000;
+    this.getSensorValuesByIdAndMacAndTime(id, startTime, endTime);
   }
 
-  async presentModalInfo(brightness: any) {
+  openModalSearchInfo(id: number): void {
+    this.presentModalChooseDate(this.MAC, id);
+  }
+
+  async presentModalTodaysInfo(brightness: any, id: number) {
+    this.dismissLoading();
     console.log("brightness:", brightness)
     const modal = await this.modalCtrl.create({
       component: ModalInfoPage,
-      componentProps: { 'brightness': brightness }
+      componentProps: { 'brightness': brightness, 'id': id }
     });
     await modal.present();
   }
@@ -186,8 +195,9 @@ export class StallsManagementPage implements OnInit {
     });
   }
 
-  getSensorValuesByIdAndMacAndTime(id: number, time: number): void {
-    this.dynamoService.getSensorValuesByIdAndMacAndTime(id, this.MAC, time).subscribe({
+  getSensorValuesByIdAndMacAndTime(id: number, startTime: number, endTime: number): void {
+    this.presentLoading();
+    this.dynamoService.getSensorValuesByIdAndMacAndTime(id, this.MAC, startTime, endTime).subscribe({
       next: (response) => {
         if (response.Count > 0) {
           const itemsArray = response.Items;
@@ -204,14 +214,17 @@ export class StallsManagementPage implements OnInit {
           const averageBrightnessPerHour = SensorValue.calculateAverageBrightnessPerHour(this.sensorValuesArray);
           console.log(averageBrightnessPerHour);
           const brightness = averageBrightnessPerHour.map((sensor) => sensor.averageBrightness);
-          this.presentModalInfo(brightness);
+          this.presentModalTodaysInfo(brightness, id);
 
         } else {
           console.log('No sensor values');
           this.presentToast("Not enough data");
+          this.dismissLoading();
         }
       },
-      error: (e) => console.error('Error getting sensor values:', e)
+      error: (e) => {
+        console.error('Error getting sensor values:', e), this.dismissLoading();
+      }
     });
   }
 
@@ -270,6 +283,32 @@ export class StallsManagementPage implements OnInit {
 
     modal.onDidDismiss().then((data) => {
       this.getParkingByMac(this.MAC);
+    });
+
+    await modal.present();
+  }
+
+  async presentLoading() {
+    return await this.loadingController.create({
+      spinner: "crescent",
+      message: "Loading",
+      translucent: true,
+      backdropDismiss: false
+    }).then(a => {
+      a.present().then(() => {
+        console.log('presented');
+      });
+    });
+  }
+
+  async dismissLoading() {
+    return await this.loadingController.dismiss().then(() => console.log('dismissed'));
+  }
+
+  async presentModalChooseDate(MAC: string, id: number) {
+    const modal = await this.modalCtrl.create({
+      component: ModalChooseDataPage,
+      componentProps: { 'MAC': MAC, 'id': id }
     });
 
     await modal.present();

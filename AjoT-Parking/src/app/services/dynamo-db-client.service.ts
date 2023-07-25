@@ -16,8 +16,8 @@ export class DynamoDbClientService {
     return this.http.get(url);
   }
 
-  getSensorValuesByIdAndMacAndTime(id: number, MAC: string, time: number): Observable<any> {
-    const url = `${this.baseUrl}/api/getSensorValuesByIdAndMacAndTime?id=${id}&MAC=${MAC}&time=${time}`;
+  getSensorValuesByIdAndMacAndTime(id: number, MAC: string, startTime: number, endTime: number): Observable<any> {
+    const url = `${this.baseUrl}/api/getSensorValuesByIdAndMacAndTime?id=${id}&MAC=${MAC}&startTime=${startTime}&endTime=${endTime}`;
     return this.http.get(url);
   }
 }

@@ -10,6 +10,7 @@ import {Chart} from 'chart.js/auto';
 export class ModalInfoPage implements OnInit {
   
   @Input() brightness: any;
+  @Input() id: number = 0;
   chart: any;
 
   constructor(private modalCtrl: ModalController) { }

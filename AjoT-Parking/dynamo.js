@@ -24,14 +24,16 @@ const getSensorValues = async() => {
     return characters;
 }
 
-const getSensorValuesByIdAndMacAndTime = async(id, MAC, time) => {
+const getSensorValuesByIdAndMacAndTime = async(id, MAC, startTime, endTime) => {
+    console.log(endTime)
     const params = {
         TableName: TABLE_NAME,
-        FilterExpression: 'stall_id = :stall_id AND MAC_address = :MAC_address AND time_microseconds > :today',
+        FilterExpression: 'stall_id = :stall_id AND MAC_address = :MAC_address AND time_microseconds > :startTime AND time_microseconds <= :endTime',
         ExpressionAttributeValues: {
             ":stall_id": parseInt(id),
             ":MAC_address": MAC,
-            ":today": parseInt(time)
+            ":startTime": parseInt(startTime),
+            ":endTime": parseInt(endTime)
         },
     }
     return await dynamoClient.scan(params).promise();

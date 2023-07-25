@@ -332,8 +332,9 @@ app.get('/api/getSensorValuesByIdAndMacAndTime', async(req, res) => {
     try {
         const id = req.query.id
         const MAC = req.query.MAC;
-        const time = req.query.time;
-        const values = await getSensorValuesByIdAndMacAndTime(id, MAC, time);
+        const startTime = req.query.startTime;
+        const endTime = req.query.endTime;
+        const values = await getSensorValuesByIdAndMacAndTime(id, MAC, startTime, endTime);
         res.json(values);
     } catch (error) {
         console.error(error);
