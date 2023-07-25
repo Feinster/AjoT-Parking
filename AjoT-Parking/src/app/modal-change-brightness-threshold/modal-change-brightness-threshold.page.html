@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<div class="inner-content">
   <form [formGroup]="changeBrightnessThresholdForm" (ngSubmit)="submitForm()" novalidate>
     <ion-item lines="full">
       <ion-input formControlName="newBrightnessThreshold" type="number" required label="Brightness Threshold" labelPlacement="floating"></ion-input>
@@ -27,4 +27,4 @@
       </ion-col>
     </ion-row>
   </form>
-</ion-content>
+</div>

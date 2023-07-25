@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<div class="inner-content">
   <form [formGroup]="addParkingForm" (ngSubmit)="submitForm()" novalidate>
     <ion-item lines="full">
       <ion-input formControlName="MAC" type="text" required label="MAC" labelPlacement="floating"></ion-input>
@@ -91,4 +91,4 @@
       </ion-col>
     </ion-row>
   </form>
-</ion-content>
+</div>

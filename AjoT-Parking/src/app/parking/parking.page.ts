@@ -36,6 +36,7 @@ export class ParkingPage implements OnInit {
   async presentModalAddParking() {
     const modal = await this.modalCtrl.create({
       component: ModalAddParkingPage,
+      cssClass: 'auto-height'
     });
 
     modal.onDidDismiss().then((data) => {

@@ -79,12 +79,13 @@ export class StallsManagementPage implements OnInit {
     this.presentModalChooseDate(this.MAC, id);
   }
 
-  async presentModalTodaysInfo(brightness: any, id: number) {
+  async presentModalTodaysInfo(brightness: any, id: number, belowThresholdAfterExceedancePerHour: any) {
     this.dismissLoading();
     console.log("brightness:", brightness)
     const modal = await this.modalCtrl.create({
       component: ModalInfoPage,
-      componentProps: { 'brightness': brightness, 'id': id }
+      cssClass: "modal-info",
+      componentProps: { 'brightness': brightness, 'id': id, 'belowThresholdAfterExceedancePerHour': belowThresholdAfterExceedancePerHour }
     });
     await modal.present();
   }
@@ -151,6 +152,7 @@ export class StallsManagementPage implements OnInit {
   async presentModalAddStall(MAC: string) {
     const modal = await this.modalCtrl.create({
       component: ModalAddStallPage,
+      cssClass: 'auto-height',
       componentProps: { 'MAC': MAC }
     });
 
@@ -214,8 +216,10 @@ export class StallsManagementPage implements OnInit {
           const averageBrightnessPerHour = SensorValue.calculateAverageBrightnessPerHour(this.sensorValuesArray);
           console.log(averageBrightnessPerHour);
           const brightness = averageBrightnessPerHour.map((sensor) => sensor.averageBrightness);
-          this.presentModalTodaysInfo(brightness, id);
 
+          const belowThresholdAfterExceedancePerHour = SensorValue.countBrightnessBelowThresholdAfterExceedancePerHour(this.sensorValuesArray, this.parking?.brightnessThreshold ?? 1000);
+          console.log(belowThresholdAfterExceedancePerHour);
+          this.presentModalTodaysInfo(brightness, id, belowThresholdAfterExceedancePerHour.map((sensor) => sensor.belowThresholdCount));
         } else {
           console.log('No sensor values');
           this.presentToast("Not enough data");
@@ -245,7 +249,8 @@ export class StallsManagementPage implements OnInit {
   async presentChangeNumberOfStalls() {
     const modal = await this.modalCtrl.create({
       component: ModalChangeNumberStallsPage,
-      componentProps: { 'MAC': this.MAC }
+      componentProps: { 'MAC': this.MAC },
+      cssClass: 'auto-height'
     });
 
     modal.onDidDismiss().then((data) => {
@@ -278,7 +283,8 @@ export class StallsManagementPage implements OnInit {
   async presentChangeBrightnessThreshold() {
     const modal = await this.modalCtrl.create({
       component: ModalChangeBrightnessThresholdPage,
-      componentProps: { 'MAC': this.MAC }
+      componentProps: { 'MAC': this.MAC },
+      cssClass: 'auto-height'
     });
 
     modal.onDidDismiss().then((data) => {
@@ -308,7 +314,8 @@ export class StallsManagementPage implements OnInit {
   async presentModalChooseDate(MAC: string, id: number) {
     const modal = await this.modalCtrl.create({
       component: ModalChooseDataPage,
-      componentProps: { 'MAC': MAC, 'id': id }
+      componentProps: { 'MAC': MAC, 'id': id, 'brightnessThreshold': this.parking?.brightnessThreshold ?? 1000},
+      cssClass: 'auto-height'
     });
 
     await modal.present();

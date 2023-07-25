@@ -7,7 +7,7 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
+<div class="inner-content">
   <form [formGroup]="addStallForm" (ngSubmit)="submitForm()" novalidate>
     <ion-item lines="full">
       <ion-input formControlName="id" type="text" required label="id" labelPlacement="floating"></ion-input>
@@ -33,4 +33,4 @@
       </ion-col>
     </ion-row>
   </form>
-</ion-content>
+</div>

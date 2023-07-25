@@ -18,6 +18,7 @@ export class ModalChooseDataPage implements OnInit {
 
   @Input() MAC: string = "";
   @Input() id: number = 0;
+  @Input() brightnessThreshold: number = 0;
 
   constructor(public formBuilder: FormBuilder, private modalCtrl: ModalController, private toastController: ToastController,
     private loadingController: LoadingController, private dynamoService: DynamoDbClientService) {
@@ -26,8 +27,7 @@ export class ModalChooseDataPage implements OnInit {
     });
   }
 
-  ngOnInit() {
-  }
+  ngOnInit() { }
 
   get errorControl() {
     return this.chooseDateForm.controls;
@@ -89,7 +89,11 @@ export class ModalChooseDataPage implements OnInit {
           const averageBrightnessPerHour = SensorValue.calculateAverageBrightnessPerHour(this.sensorValuesArray);
           console.log(averageBrightnessPerHour);
           const brightness = averageBrightnessPerHour.map((sensor) => sensor.averageBrightness);
-          this.presentModalInfo(brightness, id);
+
+          const belowThresholdAfterExceedancePerHour = SensorValue.countBrightnessBelowThresholdAfterExceedancePerHour(this.sensorValuesArray, this.brightnessThreshold);
+          console.log(belowThresholdAfterExceedancePerHour);
+
+          this.presentModalInfo(brightness, id, belowThresholdAfterExceedancePerHour.map((sensor) => sensor.belowThresholdCount));
           this.sensorValuesArray = [];
         } else {
           console.log('No sensor values');
@@ -104,12 +108,13 @@ export class ModalChooseDataPage implements OnInit {
   }
 
 
-  async presentModalInfo(brightness: any, id: number) {
+  async presentModalInfo(brightness: any, id: number, belowThresholdAfterExceedancePerHour: any) {
     this.dismissLoading();
     console.log("brightness:", brightness)
     const modal = await this.modalCtrl.create({
       component: ModalInfoPage,
-      componentProps: { 'brightness': brightness, 'id': id }
+      cssClass: "modal-info",
+      componentProps: { 'brightness': brightness, 'id': id, 'belowThresholdAfterExceedancePerHour': belowThresholdAfterExceedancePerHour }
     });
     await modal.present();
   }
