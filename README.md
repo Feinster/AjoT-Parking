@@ -1,4 +1,4 @@
-# AjoT-Parcking-FE
+# AjoT-Parcking
 
 Per quanto riguarda il front-end e il back-end prima di tutto occorre: <br />
 
