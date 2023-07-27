@@ -4,7 +4,7 @@ Per quanto riguarda il front-end e il back-end prima di tutto occorre: <br />
 
 1.	Installare l’ultima versione di Node.js da https://nodejs.org <br />
 
-Dopo aver scaricato il progetto AjoT-Parcking-FE, posizionarsi da linea di comando sulla directory e seguire i seguenti passaggi: <br />
+Dopo aver scaricato il progetto AjoT-Parcking, posizionarsi da linea di comando sulla directory e seguire i seguenti passaggi: <br />
 
 2.	Procedere con l’installazione di Ionic con il seguente comando **npm install @ionic/cli** <br />
 3.	Installare tutte le librerie presenti nel package.json con il comando **npm install** <br />
