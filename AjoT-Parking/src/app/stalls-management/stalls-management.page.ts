@@ -186,7 +186,19 @@ export class StallsManagementPage implements OnInit {
           console.log('stall deleted', response);
           this.presentToast("Stall deleted successfully");
           this.removeStallById(id);
-          this.updateThingShadow('{"state":{"desired":{"numStalls":' + this.stallsArray.length + ', "stalls_ids": [' + id + '],"stalls_pinIds": [' + pin + ']}}}');
+          
+          let stallsArrayTmp = this.stallsArray.filter((stall) => {
+            return !stall.equals(new Stall(id, pin, this.MAC, false));
+          });
+
+          const stallIds: number[] = stallsArrayTmp.map((stall) => stall.id);
+          const stallIdsString: string = stallIds.join(',');
+
+          const stallGpio: number[] = stallsArrayTmp.map((stall) => stall.GPIO);
+          const stallGpioString: string = stallGpio.join(',');
+
+          console.log('{"state":{"desired":{"numStalls":' + this.stallsArray.length + ', "stalls_ids": [' + stallIdsString + '],"stalls_pinIds": [' + stallGpioString + ']}}}')
+          this.updateThingShadow('{"state":{"desired":{"numStalls":' + this.stallsArray.length + ', "stalls_ids": [' + stallIdsString + '],"stalls_pinIds": [' + stallGpioString + ']}}}');
           this.getStalls(this.MAC);
           this.getParkingByMac(this.MAC);
         } else {
@@ -314,7 +326,7 @@ export class StallsManagementPage implements OnInit {
   async presentModalChooseDate(MAC: string, id: number) {
     const modal = await this.modalCtrl.create({
       component: ModalChooseDataPage,
-      componentProps: { 'MAC': MAC, 'id': id, 'brightnessThreshold': this.parking?.brightnessThreshold ?? 1000},
+      componentProps: { 'MAC': MAC, 'id': id, 'brightnessThreshold': this.parking?.brightnessThreshold ?? 1000 },
       cssClass: 'auto-height'
     });
 
