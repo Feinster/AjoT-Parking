@@ -66,6 +66,15 @@
       </div>
     </div>
 
+    <ion-item lines="full">
+      <ion-input formControlName="nStalls" type="number" inputmode="numeric" type="number" (keypress)="numericOnly($event)" required label="Number of stalls" labelPlacement="floating"></ion-input>
+    </ion-item>
+    <div *ngIf="addParkingForm.controls?.['nStalls']?.touched && addParkingForm.controls?.['nStalls']?.invalid">
+      <div class="error ion-padding" *ngIf="errorControl['nStalls'].errors?.['required']">
+        <ion-text color="danger">Number of stalls is required.</ion-text>
+      </div>
+    </div>
+
     <ion-radio-group formControlName="isOpen">
       <ion-list-header>
         <ion-label>Status</ion-label>

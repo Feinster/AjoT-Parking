@@ -20,6 +20,7 @@ export class ModalAddParkingPage implements OnInit {
       address: ['', [Validators.required]],
       location: ['', [Validators.required]],
       imageName: ['', [Validators.required]],
+      nStalls: ['', [Validators.required]],
       isOpen: ['', [Validators.required]],
       brightnessThreshold: [
         '',
@@ -43,7 +44,7 @@ export class ModalAddParkingPage implements OnInit {
   submitForm = () => {
     if (this.addParkingForm.valid) {
       var parking: Parking = new Parking(this.addParkingForm.value.MAC, this.addParkingForm.value.city, this.addParkingForm.value.address,
-        this.addParkingForm.value.location, 0, this.addParkingForm.value.isOpen, this.addParkingForm.value.imageName, 0, this.addParkingForm.value.brightnessThreshold);
+        this.addParkingForm.value.location, this.addParkingForm.value.nStalls, this.addParkingForm.value.isOpen, this.addParkingForm.value.imageName, 0, this.addParkingForm.value.brightnessThreshold);
       this.parkingInsertion(parking);
       return false;
     } else {
@@ -89,5 +90,11 @@ export class ModalAddParkingPage implements OnInit {
       color: 'warning',
     });
     toast.present();
+  }
+
+  numericOnly(event: any): boolean {
+    let pattern = /^([0-9])$/;
+    let result = pattern.test(event.key);
+    return result;
   }
 }
