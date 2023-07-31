@@ -1,4 +1,6 @@
 # AjoT-Parcking
+Questa repository rappresenta il Back-End e il Front-end di un parcheggio intelligente. 
+La parte che invece riguarda il microcontrollore è disponibile a questa repository: https://github.com/Yagotzirck/AjoT-Parking_Arduino
 
 Per quanto riguarda il front-end e il back-end prima di tutto occorre:  <br />
 1.	Installare l’ultima versione di Node.js da https://nodejs.org <br />
