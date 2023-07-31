@@ -278,6 +278,29 @@ app.post('/api/changeNumberOfStalls', (req, res) => {
     }
 });
 
+app.post('/api/deleteParking', (req, res) => {
+    try {
+        const MAC = req.body.MAC;
+
+        // we need first to delete stalls because of foreign key
+        const deleteStallsQuery = `DELETE FROM stalls WHERE MAC_PARKING = '${MAC}'`;
+        mysqlConnection.query(deleteStallsQuery, (error, stallsDeleteResults) => {
+            if (error) throw error;
+
+            const deleteParkingQuery = `DELETE FROM parking WHERE MAC = '${MAC}'`;
+            mysqlConnection.query(deleteParkingQuery, (error, results) => {
+                if (error) throw error;
+                res.json(results);
+            });
+        });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({
+            error: 'Something went wrong'
+        });
+    }
+});
+
 app.post('/api/changeBrightnessThreshold', (req, res) => {
     try {
         const MAC = req.body.MAC;

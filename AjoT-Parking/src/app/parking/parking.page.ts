@@ -20,6 +20,7 @@ export class ParkingPage implements OnInit {
   ngOnInit() { }
 
   ionViewWillEnter() {
+    this.parkingArray = [];
     this.getParking();
   }
 

@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { LoadingController, ModalController, ToastController } from '@ionic/angular';
 import { ModalInfoPage } from '../modal-info/modal-info.page';
-import { ActivatedRoute, } from '@angular/router';
+import { ActivatedRoute, Router, } from '@angular/router';
 import { MysqlService } from '../services/mysql.service';
 import { Stall } from '../models/Stall';
 import { Parking } from '../models/Parking';
@@ -30,7 +30,8 @@ export class StallsManagementPage implements OnInit {
   private socketSubscription: Subscription = new Subscription;
 
   constructor(private modalCtrl: ModalController, private route: ActivatedRoute, private mysqlService: MysqlService, private loadingController: LoadingController,
-    private dynamoService: DynamoDbClientService, private toastController: ToastController, private aws: AwsIotService, private ws: WebSocketService) { }
+    private dynamoService: DynamoDbClientService, private toastController: ToastController, private aws: AwsIotService, 
+    private ws: WebSocketService, private router: Router) { }
 
   ngOnInit() {
     // Subscribe to the service observable to receive data from the server
@@ -186,7 +187,7 @@ export class StallsManagementPage implements OnInit {
           console.log('stall deleted', response);
           this.presentToast("Stall deleted successfully");
           this.removeStallById(id);
-          
+
           let stallsArrayTmp = this.stallsArray.filter((stall) => {
             return !stall.equals(new Stall(id, pin, this.MAC, false));
           });
@@ -331,5 +332,19 @@ export class StallsManagementPage implements OnInit {
     });
 
     await modal.present();
+  }
+
+  deleteParking() {
+    this.mysqlService.deleteParking(this.MAC).subscribe({
+      next: (response) => {
+        if (response.affectedRows > 0) {
+          console.log('Parking deleted', response);
+          this.router.navigate(['/parking']);
+        } else {
+          console.log('No change or parking not found', response);
+        }
+      },
+      error: (e) => console.error('Errore deleting parking', e)
+    });
   }
 }

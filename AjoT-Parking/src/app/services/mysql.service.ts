@@ -153,6 +153,23 @@ export class MysqlService {
     return this.http.post(url, requestBody, httpOptions);
   }
 
+  deleteParking(MAC: string): Observable<any> {
+    const url = `${this.baseUrl}/api/deleteParking`;
+
+    const requestBody = {
+      MAC: MAC
+    };
+
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json'
+      })
+    };
+
+    return this.http.post(url, requestBody, httpOptions);
+  }
+
+
   changeBrightnessThreshold(MAC: string, newBrightnessThreshold: number): Observable<any> {
     const url = `${this.baseUrl}/api/changeBrightnessThreshold`;
 
