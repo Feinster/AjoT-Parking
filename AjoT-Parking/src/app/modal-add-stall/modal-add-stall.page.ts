@@ -138,7 +138,7 @@ export class ModalAddStallPage implements OnInit {
   }
 
   getThingShadow(): void {
-    this.aws.getThingShadow('58:BF:25:9F:BC:98').subscribe({
+    this.aws.getThingShadow(this.MAC).subscribe({
       next: (response) => {
         const jsonResponse = JSON.parse(response);
         this.numStalls = jsonResponse.state.reported.numStalls;

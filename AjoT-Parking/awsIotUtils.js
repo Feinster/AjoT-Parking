@@ -101,7 +101,11 @@ const subscribeStatus = async(MAC) => {
                                 console.log("foreignStateChange newStallStatus", stateObject.state.reported.stalls_free);
                                 stalls_ids = stateObject.state.reported.stalls_ids;
                                 stalls_free = stateObject.state.reported.stalls_free;
-                                changeStatusStallOnDB(MAC, stalls_ids, stalls_free);
+                                if (stalls_ids === null || stalls_ids.length === 0) {
+                                    console.log("The array is empty or null.");
+                                } else {
+                                    changeStatusStallOnDB(MAC, stalls_ids, stalls_free);
+                                }
                             } else {
                                 console.log('no reported lights state');
                             }
